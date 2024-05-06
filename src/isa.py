@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 
 
@@ -34,3 +35,11 @@ class Instruction:
         self.opcode = opcode
         self.operand = operand
         self.addressing = addressing
+
+
+def write_code(file: str, instructions: list[Instruction]):
+    with open(file, "w", encoding="utf-8") as f:
+        buf = []
+        for instruction in instructions:
+            buf.append(json.dumps({"address": instruction.address, "opcode": instruction.opcode, "operand": instruction.operand, "addressing": instruction.addressing}))
+        f.write("[" + ",\n".join(buf) + "]")
