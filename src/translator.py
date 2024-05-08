@@ -67,7 +67,7 @@ def recognise_token(src: str) -> TokenType:
 key_words = ["while", "if", "print", "read"]
 #Название переменной, которое соответствует типу переменной и адресу в памяти
 variables: dict[str, tuple[DataType, int]] = dict()
-current_free_data_address = 0
+current_free_data_address = 10
 current_instruction_address = 0
 result: list[Instruction] = list()
 
@@ -109,29 +109,35 @@ def create_code(code: list[str]):
                 if new_variable_name in variables:
                     raise VarException("Переменная: " + new_variable_name + " уже определена")
                 if current_token[-1] == '=' and recognise_token(code[i + 1]) == TokenType.STRING:
-                    variables[new_variable_name] = (DataType.STRING, 1001)
-                    result.append(Instruction(current_instruction_address, Opcode.STUB, "some", None))
-                    current_instruction_address += 1
+                    #Проинициализировали новую строку
+                    variables[new_variable_name] = (DataType.STRING, current_free_data_address)
+                    new_string = code[i + 1][1:-1]
+                    create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
+                    create_operation(Opcode.ST, current_free_data_address)
+                    current_free_data_address += 1
+                    for char in new_string:
+                        create_operation(Opcode.LD, ord(char), Addressing.DIR)
+                        create_operation(Opcode.ST, current_free_data_address)
+                        current_free_data_address += 1
+                    create_operation(Opcode.LD, 0, Addressing.DIR)
+                    create_operation(Opcode.ST, current_free_data_address)
+                    current_free_data_address += 1
                     i += 1
-                    # Заглушка
                 else:
                     statement = current_token[current_token.index('=') + 1:].strip()
                     if recognise_token(statement) == TokenType.VAR_VALUE:
                         if statement not in variables:
                             raise VarException("Переменная: " + statement + " не определена")
                         if variables[statement][0] == DataType.STRING:
-                            result.append(Instruction(current_instruction_address, Opcode.STUB, "строка", None))
-                            current_instruction_address += 1
-                            #Заглушка
+                            create_operation(Opcode.LD, variables[statement][1], Addressing.MEM)
+                            create_operation(Opcode.ST, current_free_data_address)
+                            variables[new_variable_name] = (DataType.STRING, current_free_data_address)
+                            current_free_data_address += 1
                         else:
-                            result.append(Instruction(current_instruction_address, Opcode.LD, variables[statement][1],
-                                                      Addressing.MEM))
-                            current_instruction_address += 1
-                            result.append(
-                                Instruction(current_instruction_address, Opcode.ST, current_free_data_address))
+                            create_operation(Opcode.LD, variables[statement][1], Addressing.MEM)
+                            create_operation(Opcode.ST, current_free_data_address)
                             variables[new_variable_name] = (DataType.INT, current_free_data_address)
                             current_free_data_address += 1
-                            current_instruction_address += 1
                     else:
                         create_math(statement)
                         result.append(Instruction(current_instruction_address, Opcode.ST, current_free_data_address))
@@ -140,6 +146,16 @@ def create_code(code: list[str]):
                         current_free_data_address += 1
 
         i += 1
+
+
+def create_operation(opcode, operand=None, addressing=None):
+    global current_instruction_address
+    global current_free_data_address
+    global result
+    global variables
+    result.append(Instruction(current_instruction_address, opcode, operand, addressing))
+    current_instruction_address += 1
+
 
 def translate(src: str) -> list[Instruction]:
     if src.count('"') % 2 != 0:
@@ -151,8 +167,12 @@ def translate(src: str) -> list[Instruction]:
     while i < len(code):
         temp = code[i]
         if temp[0] == '"':
-            code_modified.append('"' + code[i + 1] + '"')
-            i += 3
+            if(code[i + 1])[0] != '"':
+                code_modified.append('"' + code[i + 1] + '"')
+                i += 3
+            else:
+                code_modified.append('""')
+                i += 2
         else:
             i += 1
             code_modified.append(temp)

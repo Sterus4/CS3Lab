@@ -8,21 +8,28 @@ class Addressing(str, Enum):
 
 
 class Opcode(str, Enum):
+    # Арифметика
     ADD = "add"
     SUB = "sub"
     MUL = "mul"
     DIV = "div"
     MOD = "mod"
 
+
+    # Память
     LD = "ld"
     ST = "st"
+    PUSH = "push"
+    POP = "pop"
 
-    HLT = "hlt"
-
+    # Условные переходы
     JMP = "jmp"
     JNZ = "jnz"
     JZ = "jz"
     JAZ = "jaz"
+    JBZ = "jbz"
+
+    HLT = "hlt"
 
     STUB = "stub"
 
