@@ -1,6 +1,7 @@
+import re
 from enum import Enum
 
-from src.exceptions import TranslateException
+from src.exceptions import *
 from src.isa import Instruction, write_code, Opcode, Addressing
 
 
@@ -9,10 +10,66 @@ class DataType(str, Enum):
     STRING = "string"
 
 
+class TokenType(Enum):
+    CREATE_NEW_VAR = 1
+    STRING = 2
+    WHILE = 3
+    IF = 4
+    QUOTE_ROUND_OPEN = 5
+    QUOTE_ROUND_CLOSE = 6
+    QUOTE_FIGURE_OPEN = 7
+    QUOTE_FIGURE_CLOSE = 8
+    COMPARISON = 9
+    PRINT = 10
+    READ = 11
+    INT_VALUE = 12
+    VAR_VALUE = 13
+    UPDATE_VAR = 14
+    MATH_EXPRESSION = 15
+
+
+def recognise_token(src: str) -> TokenType:
+    if src == '':
+        raise UnknownToken("Пустая строка в качестве токена")
+    if re.match(r'var \w+\s*=', src):
+        return TokenType.CREATE_NEW_VAR
+    if src[0] == '"' and src[-1] == '"' and len(src) > 1:
+        return TokenType.STRING
+    if src == "while":
+        return TokenType.WHILE
+    if src == "if":
+        return TokenType.IF
+    if src == '{':
+        return TokenType.QUOTE_FIGURE_OPEN
+    if src == '}':
+        return TokenType.QUOTE_FIGURE_CLOSE
+    if src == '(':
+        return TokenType.QUOTE_ROUND_OPEN
+    if src == ')':
+        return TokenType.QUOTE_ROUND_CLOSE
+    if re.match(r"^[\s0123456789\w*/%+-]+ (==|>|<|>=|<=) [\s0123456789\w*/%+-]+$", src):
+        return TokenType.COMPARISON
+    if src == 'print':
+        return TokenType.PRINT
+    if src == 'read':
+        return TokenType.READ
+    if re.fullmatch(r'^[0-9]+$', src):
+        return TokenType.INT_VALUE
+    if re.fullmatch(r'^\w+$', src):
+        return TokenType.VAR_VALUE
+    if re.match(r'^\w+\s*=', src):
+        return TokenType.UPDATE_VAR
+    if re.fullmatch(r'[\s0123456789\w*/%+-]+', src):
+        return TokenType.MATH_EXPRESSION
+    raise UnknownToken("Несуществующий токен: " + src)
+
+
 key_words = ["while", "if", "print", "read"]
-variables = dict[
-    str, tuple[DataType, int]]  #Название переменной, которое соответствует типу переменной и адресу в памяти
+#Название переменной, которое соответствует типу переменной и адресу в памяти
+variables: dict[str, tuple[DataType, int]] = dict()
 current_free_data_address = 0
+current_instruction_address = 0
+result: list[Instruction] = list()
 
 
 def split_by_symbol(code: list, symbol: chr):
@@ -30,33 +87,61 @@ def split_by_symbol(code: list, symbol: chr):
     return code_modified
 
 
-def check_string(string: str):
-    return string[0] == '"' or string[-1] == '"'
+def create_math(statement):
+    global current_instruction_address
+    global current_free_data_address
+    result.append(Instruction(current_instruction_address, Opcode.LD, int(statement), Addressing.DIR))
+    current_instruction_address += 1
 
 
-def check_math_expression(expression: str):
-    pass
+def create_code(code: list[str]):
+    global current_instruction_address
+    global current_free_data_address
+    global variables
+    i = 0
+    while True:
+        if i >= len(code):
+            return
+        current_token = code[i]
+        match recognise_token(current_token):
+            case TokenType.CREATE_NEW_VAR:
+                new_variable_name = current_token[3:current_token.index('=')].strip()
+                if new_variable_name in variables:
+                    raise VarException("Переменная: " + new_variable_name + " уже определена")
+                if current_token[-1] == '=' and recognise_token(code[i + 1]) == TokenType.STRING:
+                    variables[new_variable_name] = (DataType.STRING, 1001)
+                    result.append(Instruction(current_instruction_address, Opcode.STUB, "some", None))
+                    current_instruction_address += 1
+                    i += 1
+                    # Заглушка
+                else:
+                    statement = current_token[current_token.index('=') + 1:].strip()
+                    if recognise_token(statement) == TokenType.VAR_VALUE:
+                        if statement not in variables:
+                            raise VarException("Переменная: " + statement + " не определена")
+                        if variables[statement][0] == DataType.STRING:
+                            result.append(Instruction(current_instruction_address, Opcode.STUB, "строка", None))
+                            current_instruction_address += 1
+                            #Заглушка
+                        else:
+                            result.append(Instruction(current_instruction_address, Opcode.LD, variables[statement][1],
+                                                      Addressing.MEM))
+                            current_instruction_address += 1
+                            result.append(
+                                Instruction(current_instruction_address, Opcode.ST, current_free_data_address))
+                            variables[new_variable_name] = (DataType.INT, current_free_data_address)
+                            current_free_data_address += 1
+                            current_instruction_address += 1
+                    else:
+                        create_math(statement)
+                        result.append(Instruction(current_instruction_address, Opcode.ST, current_free_data_address))
+                        variables[new_variable_name] = (DataType.INT, current_free_data_address)
+                        current_instruction_address += 1
+                        current_free_data_address += 1
 
-
-def check_while(code: list, index: int):
-    pass
-
-
-def check_if(code: list, index: int):
-    pass
-
-
-def check():
-    pass
-
-
-def valid_code(code):
-    pass
-
+        i += 1
 
 def translate(src: str) -> list[Instruction]:
-    result: list[Instruction] = list()
-
     if src.count('"') % 2 != 0:
         raise TranslateException("Неправильно расставлены кавычки для строк")
 
@@ -81,7 +166,10 @@ def translate(src: str) -> list[Instruction]:
     # Разделили код на блоки
     print(code)
     # Проверим код на валидность
-    valid_code(code)
+    create_code(code)
+    for temp in variables:
+        print(temp, ' : ', variables[temp][0], variables[temp][1])
+    result.append(Instruction(current_instruction_address, Opcode.HLT, None, None))
 
     return result
 

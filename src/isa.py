@@ -24,13 +24,15 @@ class Opcode(str, Enum):
     JZ = "jz"
     JAZ = "jaz"
 
+    STUB = "stub"
+
     def __str__(self):
         return str(self.value)
 
 
 class Instruction:
 
-    def __init__(self, address: int, opcode: Opcode, operand, addressing: Addressing):
+    def __init__(self, address: int, opcode: Opcode, operand = None, addressing = None):
         self.address = address
         self.opcode = opcode
         self.operand = operand
