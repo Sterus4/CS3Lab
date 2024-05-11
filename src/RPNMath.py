@@ -76,7 +76,15 @@ def create_rpn_expression(src: str) -> list:
     src = re.sub(r'\)', ' ) ', src)
     src = re.split(r'\s+', src)
     src = [i for i in src if i != '']
+    src_copy = []
+    for i in range(len(src)):
+        if src[i] == '-':
+            if i == 0 or src[i - 1] == '(':
+                src_copy.append('0')
+        src_copy.append(src[i])
+    src = src_copy.copy()
     expression = toRPN(src)
+    print(expression)
 
     if not check_equation(expression):
         raise MathExpressionException("Неверное математическое выражение: " + src)
