@@ -12,3 +12,7 @@ class InvalidToken(Exception):
 
 class VarException(Exception):
     """Выбрасывается, если обнаружена ошибка с переменной"""
+
+
+class MathExpressionException(Exception):
+    """Выбрасывается, если обнаружена ошибка в математическом выражении"""
