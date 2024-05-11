@@ -9,6 +9,7 @@ class Addressing(str, Enum):
 
 class Opcode(str, Enum):
     # Арифметика
+
     ADD = "add"
     SUB = "sub"
     MUL = "mul"
@@ -26,8 +27,10 @@ class Opcode(str, Enum):
     JMP = "jmp"
     JNZ = "jnz"
     JZ = "jz"
-    JAZ = "jaz"
     JBZ = "jbz"
+    JB = "jb"
+    JAZ = "jaz"
+    JA = "ja"
 
     HLT = "hlt"
 

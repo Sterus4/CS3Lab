@@ -80,9 +80,45 @@ def is_char(src: str) -> bool:
 def create_math(statement):
     global current_instruction_address
     global current_free_data_address
-    expression = create_rpn_expression(statement)
+    global variables
+    expression = create_rpn_expression(statement.strip())
     print(expression)
     create_operation(Opcode.LD, int(statement), Addressing.DIR)
+
+
+def create_comparison(left: str, right: str):
+    global current_instruction_address
+    global current_free_data_address
+    global variables
+    create_math(right)
+    create_operation(Opcode.ST, current_free_data_address)
+    create_math(left)
+    create_operation(Opcode.SUB, current_free_data_address, Addressing.MEM)
+
+
+def find_end_of_block(code: list[str], start_position: int) -> int:
+    i = start_position + 1
+    count = 1
+    while i < len(code):
+        if code[i] == '}':
+            count -= 1
+            if count == 0: return i
+        if code[i] == '{':
+            count += 1
+        i += 1
+    raise TranslateException("Не хватает закрывающей фигурной скобки для блока")
+
+
+def create_reverse_sign(comparison_sign: str):
+    current_command: Opcode = Opcode.JZ
+    match comparison_sign:
+        case '==': current_command = Opcode.JNZ
+        case '!=': current_command = Opcode.JZ
+        case '>': current_command = Opcode.JBZ
+        case '<': current_command = Opcode.JAZ
+        case '>=': current_command = Opcode.JB
+        case '<=': current_command = Opcode.JA
+    create_operation(current_command)
 
 
 def create_code(code: list[str]):
@@ -126,7 +162,8 @@ def create_code(code: list[str]):
                 current_free_data_address += 1
             case TokenType.CREATE_NEW_POINTER:
                 var_type = current_token.split('[')[0]
-                if var_type != "char": raise VarException("В языке поддерживаются только char pointer: " + current_token)
+                if var_type != "char": raise VarException(
+                    "В языке поддерживаются только char pointer: " + current_token)
                 var_name = current_token.split(']')[1].split('=')[0].strip()
                 if var_name in variables:
                     raise VarException("Переменная " + var_name + " уже существует")
@@ -134,7 +171,8 @@ def create_code(code: list[str]):
                     var_capacity = -1
                 else:
                     var_capacity = int(current_token[current_token.find('[') + 1:current_token.find(']')])
-                if var_capacity == 0: raise VarException("Нельзя проинициализировать массив из 0 элементов: " + current_token)
+                if var_capacity == 0: raise VarException(
+                    "Нельзя проинициализировать массив из 0 элементов: " + current_token)
                 operand = None
                 if '=' in current_token:
                     operand = current_token.split('=')[1].strip()
@@ -142,7 +180,8 @@ def create_code(code: list[str]):
                 variables[var_name] = (DataType.POINTER, current_free_data_address)
                 if var_capacity == -1 and operand is None: raise InvalidToken("Неизвестный токен: " + current_token)
                 if var_capacity == -1:
-                    if recognise_token(operand) != TokenType.STRING: raise InvalidToken("Неизвестный токен: " + current_token)
+                    if recognise_token(operand) != TokenType.STRING: raise InvalidToken(
+                        "Неизвестный токен: " + current_token)
                     create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
                     create_operation(Opcode.ST, current_free_data_address)
                     current_free_data_address += 1
@@ -155,7 +194,8 @@ def create_code(code: list[str]):
                     create_operation(Opcode.ST, current_free_data_address)
                     current_free_data_address += 1
                 else:
-                    if operand is not None and recognise_token(operand) != TokenType.STRING: raise InvalidToken("Неизвестный токен: " + current_token)
+                    if operand is not None and recognise_token(operand) != TokenType.STRING: raise InvalidToken(
+                        "Неизвестный токен: " + current_token)
                     create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
                     create_operation(Opcode.ST, current_free_data_address)
                     current_free_data_address += 1
@@ -176,6 +216,53 @@ def create_code(code: list[str]):
 
                     current_free_data_address += var_capacity
                 print(var_capacity, var_name, operand)
+            case TokenType.UPDATE_VAR:
+                var_name, operand = current_token.split('=')[0].strip(), current_token.split('=')[1].strip()
+                if var_name not in variables: raise VarException(
+                    "Переменной " + var_name + " не существует: " + current_token)
+                if variables[var_name][0] == DataType.POINTER: raise VarException(
+                    "Нельзя изменить указатель: " + current_token)  #TODO (Возможно поправить, если надо будет уметь изменять указатели)
+                if variables[var_name][0] == DataType.CHAR:
+                    if is_char(operand):
+                        create_operation(Opcode.LD, ord(operand[1]), Addressing.DIR)
+                    elif operand.isdigit() and 0 <= int(operand) <= 255:
+                        create_operation(Opcode.LD, operand, Addressing.DIR)
+                    else:
+                        raise VarException(
+                            "Инициализировать char можно только числом от 0 до 255 или символом: " + current_token)
+                else:
+                    create_math(operand)
+                create_operation(Opcode.ST, variables[var_name][1])
+            case TokenType.IF:
+                if (recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
+                        or recognise_token(code[i + 2]) != TokenType.COMPARISON
+                        or recognise_token(code[i + 3]) != TokenType.QUOTE_ROUND_CLOSE
+                        or recognise_token(code[i + 4]) != TokenType.QUOTE_FIGURE_OPEN):
+                    raise TranslateException("Неправильный формат if выражения: " + str(code[i:i + 4]))
+                start_of_block, end_of_block = i + 4, find_end_of_block(code, i + 4)
+                left, comparison_sign, right = re.split(r'(==|>=|<=|>|<)', code[i + 2])
+                create_comparison(left, right)
+                comparison_index = len(result)
+                create_reverse_sign(comparison_sign)
+                create_code(code[start_of_block + 1: end_of_block])
+                result[comparison_index].operand = current_instruction_address
+                i = end_of_block
+            case TokenType.WHILE:
+                if (recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
+                        or recognise_token(code[i + 2]) != TokenType.COMPARISON
+                        or recognise_token(code[i + 3]) != TokenType.QUOTE_ROUND_CLOSE
+                        or recognise_token(code[i + 4]) != TokenType.QUOTE_FIGURE_OPEN):
+                    raise TranslateException("Неправильный формат while выражения: " + str(code[i:i + 4]))
+                start_of_block, end_of_block = i + 4, find_end_of_block(code, i + 4)
+                left, comparison_sign, right = re.split(r'(==|>=|<=|>|<)', code[i + 2])
+                while_start = current_instruction_address
+                create_comparison(left, right)
+                comparison_index = len(result)
+                create_reverse_sign(comparison_sign)
+                create_code(code[start_of_block + 1: end_of_block])
+                result[comparison_index].operand = current_instruction_address + 1
+                create_operation(Opcode.JMP, while_start)
+                i = end_of_block
         i += 1
 
 
@@ -225,8 +312,8 @@ def translate(src: str) -> list[Instruction]:
     print(code)
 
     create_code(code)
-    #for temp in variables:
-    #    print(temp, ' : ', variables[temp][0], variables[temp][1])
+    for temp in variables:
+        print(temp, ' : ', variables[temp][0], variables[temp][1])
     create_operation(Opcode.HLT)
     return result
 
