@@ -5,6 +5,7 @@ from enum import Enum
 class Addressing(str, Enum):
     DIR = "direct"
     MEM = "mem"
+    SP = "sp"
 
 
 class Opcode(str, Enum):

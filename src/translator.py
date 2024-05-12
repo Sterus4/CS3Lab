@@ -83,7 +83,35 @@ def create_math(statement):
     global variables
     expression = create_rpn_expression(statement.strip())
     print(expression)
-    create_operation(Opcode.LD, int(statement), Addressing.DIR)
+    for i in expression:
+        if i.isdigit():
+            create_operation(Opcode.LD, i, Addressing.DIR)
+            if len(expression) == 1: break
+            create_operation(Opcode.PUSH)
+        elif re.fullmatch('^\w+$', i):
+            if i not in variables or variables[i][0] == DataType.POINTER:
+                raise VarException("Переменная: " + i + " не существует, или не является числом: " + statement)
+            create_operation(Opcode.LD, variables[i][1], Addressing.MEM)
+            if len(expression) == 1: break
+            create_operation(Opcode.PUSH)
+        else:
+            create_operation(Opcode.POP)
+            create_operation(Opcode.LD, 0, Addressing.SP)
+            match i:
+                case '+':
+                    create_operation(Opcode.ADD, -1, Addressing.SP)
+                case '-':
+                    create_operation(Opcode.SUB, -1, Addressing.SP)
+                case '*':
+                    create_operation(Opcode.MUL, -1, Addressing.SP)
+                case '/':
+                    create_operation(Opcode.DIV, -1, Addressing.SP)
+                case '%':
+                    create_operation(Opcode.MOD, -1, Addressing.SP)
+                case _:
+                    raise MathExpressionException("Неизвестный знак выражения: " + i)
+            create_operation(Opcode.ST, 0, Addressing.SP)
+    if len(expression) != 1: create_operation(Opcode.POP)
 
 
 def create_comparison(left: str, right: str):
@@ -91,7 +119,7 @@ def create_comparison(left: str, right: str):
     global current_free_data_address
     global variables
     create_math(right)
-    create_operation(Opcode.ST, current_free_data_address)
+    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
     create_math(left)
     create_operation(Opcode.SUB, current_free_data_address, Addressing.MEM)
 
@@ -112,12 +140,18 @@ def find_end_of_block(code: list[str], start_position: int) -> int:
 def create_reverse_sign(comparison_sign: str):
     current_command: Opcode = Opcode.JZ
     match comparison_sign:
-        case '==': current_command = Opcode.JNZ
-        case '!=': current_command = Opcode.JZ
-        case '>': current_command = Opcode.JBZ
-        case '<': current_command = Opcode.JAZ
-        case '>=': current_command = Opcode.JB
-        case '<=': current_command = Opcode.JA
+        case '==':
+            current_command = Opcode.JNZ
+        case '!=':
+            current_command = Opcode.JZ
+        case '>':
+            current_command = Opcode.JBZ
+        case '<':
+            current_command = Opcode.JAZ
+        case '>=':
+            current_command = Opcode.JB
+        case '<=':
+            current_command = Opcode.JA
     create_operation(current_command)
 
 
@@ -158,7 +192,7 @@ def create_code(code: list[str]):
                             "В char нельзя сохранить число больше 255: " + current_token)
                         local_operand = operand
                     create_operation(Opcode.LD, local_operand, Addressing.DIR)
-                create_operation(Opcode.ST, current_free_data_address)
+                create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
                 current_free_data_address += 1
             case TokenType.CREATE_NEW_POINTER:
                 var_type = current_token.split('[')[0]
@@ -183,21 +217,21 @@ def create_code(code: list[str]):
                     if recognise_token(operand) != TokenType.STRING: raise InvalidToken(
                         "Неизвестный токен: " + current_token)
                     create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
-                    create_operation(Opcode.ST, current_free_data_address)
+                    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
                     current_free_data_address += 1
                     operand = operand[1:-1]
                     for char in operand:
                         create_operation(Opcode.LD, ord(char), Addressing.DIR)
-                        create_operation(Opcode.ST, current_free_data_address)
+                        create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
                         current_free_data_address += 1
                     create_operation(Opcode.LD, 0, Addressing.DIR)
-                    create_operation(Opcode.ST, current_free_data_address)
+                    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
                     current_free_data_address += 1
                 else:
                     if operand is not None and recognise_token(operand) != TokenType.STRING: raise InvalidToken(
                         "Неизвестный токен: " + current_token)
                     create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
-                    create_operation(Opcode.ST, current_free_data_address)
+                    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
                     current_free_data_address += 1
                     if operand is not None:
                         local_free_data_address = current_free_data_address
@@ -209,10 +243,10 @@ def create_code(code: list[str]):
                                 break
                             count += 1
                             create_operation(Opcode.LD, ord(char), Addressing.DIR)
-                            create_operation(Opcode.ST, local_free_data_address)
+                            create_operation(Opcode.ST, local_free_data_address, Addressing.MEM)
                             local_free_data_address += 1
                         create_operation(Opcode.LD, 0, Addressing.DIR)
-                        create_operation(Opcode.ST, local_free_data_address)
+                        create_operation(Opcode.ST, local_free_data_address, Addressing.MEM)
 
                     current_free_data_address += var_capacity
                 print(var_capacity, var_name, operand)
@@ -232,7 +266,7 @@ def create_code(code: list[str]):
                             "Инициализировать char можно только числом от 0 до 255 или символом: " + current_token)
                 else:
                     create_math(operand)
-                create_operation(Opcode.ST, variables[var_name][1])
+                create_operation(Opcode.ST, variables[var_name][1], Addressing.MEM)
             case TokenType.IF:
                 if (recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
                         or recognise_token(code[i + 2]) != TokenType.COMPARISON

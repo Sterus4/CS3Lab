@@ -62,8 +62,8 @@ def check_equation(src: list) -> bool:
     return True
 
 
-def create_rpn_expression(src: str) -> list:
-    src_copy = src
+def create_rpn_expression(src: str) -> list[str]:
+    temp = ''.join(src)
     if not re.fullmatch(r'[\s()0123456789\w*/%+-]+', src):
         raise MathExpressionException("Неизвестные символы в выражении: " + src)
     if not check_quotes(src):
@@ -87,5 +87,5 @@ def create_rpn_expression(src: str) -> list:
     print(expression)
 
     if not check_equation(expression):
-        raise MathExpressionException("Неверное математическое выражение: " + src)
+        raise MathExpressionException("Неверное математическое выражение: " + temp)
     return expression
