@@ -3,9 +3,10 @@ from enum import Enum
 
 
 class Addressing(str, Enum):
-    DIR = "direct"
-    MEM = "mem"
-    SP = "sp"
+    DIR = "direct"  # Прямая загрузка
+    MEM = "mem"  # Прямая адресация
+    SP = "sp"  # Адресация относительно стека
+    IND = "ind"  # Косвенная адресация
 
 
 class Opcode(str, Enum):
@@ -17,6 +18,7 @@ class Opcode(str, Enum):
     DIV = "div"
     MOD = "mod"
 
+    INC = "inc"
 
     # Память
     LD = "ld"
@@ -43,7 +45,7 @@ class Opcode(str, Enum):
 
 class Instruction:
 
-    def __init__(self, address: int, opcode: Opcode, operand = None, addressing = None):
+    def __init__(self, address: int, opcode: Opcode, operand=None, addressing=None):
         self.address = address
         self.opcode = opcode
         self.operand = operand
@@ -54,5 +56,7 @@ def write_code(file: str, instructions: list[Instruction]):
     with open(file, "w", encoding="utf-8") as f:
         buf = []
         for instruction in instructions:
-            buf.append(json.dumps({"address": instruction.address, "opcode": instruction.opcode, "operand": instruction.operand, "addressing": instruction.addressing}))
+            buf.append(json.dumps(
+                {"address": instruction.address, "opcode": instruction.opcode, "operand": instruction.operand,
+                 "addressing": instruction.addressing}))
         f.write("[" + ",\n".join(buf) + "]")

@@ -5,6 +5,9 @@ from src.exceptions import *
 from src.isa import Instruction, write_code, Opcode, Addressing
 from RPNMath import create_rpn_expression
 
+IO_OUT_MEM = 0  # Адрес вывода
+IO_IN_MEM = 1  # Адрес ввода
+
 
 class DataType(str, Enum):
     INT = "int"
@@ -28,6 +31,7 @@ class TokenType(Enum):
     VAR_VALUE = 13
     UPDATE_VAR = 14
     MATH_EXPRESSION = 15
+    CHAR = 16
 
 
 def recognise_token(src: str) -> TokenType:
@@ -51,13 +55,15 @@ def recognise_token(src: str) -> TokenType:
         return TokenType.QUOTE_ROUND_OPEN
     if src == ')':
         return TokenType.QUOTE_ROUND_CLOSE
+    if is_char(src):
+        return TokenType.CHAR
     if re.match(r"^[\s()0123456789\w*/%+-]+(==|>|<|>=|<=)[\s()0123456789\w*/%+-]+$", src):
         return TokenType.COMPARISON
     if src == 'print':
         return TokenType.PRINT
     if src == 'read':
         return TokenType.READ
-    if re.fullmatch(r'^\w+$', src):
+    if re.fullmatch(r'^\w*[a-zA-Z]\w*$', src):
         return TokenType.VAR_VALUE
     if re.match(r'^\w+\s*=', src):
         return TokenType.UPDATE_VAR
@@ -135,6 +141,43 @@ def find_end_of_block(code: list[str], start_position: int) -> int:
             count += 1
         i += 1
     raise TranslateException("Не хватает закрывающей фигурной скобки для блока")
+
+
+def add_print_char(src: chr):
+    global current_instruction_address
+    global current_free_data_address
+    global variables
+    create_operation(Opcode.LD, ord(src), Addressing.DIR)
+    create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
+
+
+def add_print_string(src: str):
+    src = src[1:-1]
+    for i in src:
+        add_print_char(i)
+
+
+def add_print_pointer():  # В Acc адрес начала строки
+    global current_instruction_address
+    global current_free_data_address
+    global variables
+    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
+    index_to_jump = len(result)
+    create_operation(Opcode.LD, current_free_data_address, Addressing.IND)
+
+    #TODO как будем делать LD? Через алу?
+    create_operation(Opcode.SUB, 0, Addressing.DIR)
+    #TODO УБЕРИ ЭТО ЕСЛИ РАЗОБРАЛСЯ + Поправь адреса без одной команды
+    create_operation(Opcode.JZ, current_instruction_address + 6)
+    create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
+    create_operation(Opcode.LD, current_free_data_address, Addressing.MEM)
+    create_operation(Opcode.INC)
+    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
+    create_operation(Opcode.JMP, index_to_jump)
+
+
+def add_print_number():  # Число уже находится в аккумуляторе
+    pass
 
 
 def create_reverse_sign(comparison_sign: str):
@@ -297,6 +340,49 @@ def create_code(code: list[str]):
                 result[comparison_index].operand = current_instruction_address + 1
                 create_operation(Opcode.JMP, while_start)
                 i = end_of_block
+            case TokenType.PRINT:
+                if recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN or recognise_token(
+                        code[i + 3]) != TokenType.QUOTE_ROUND_CLOSE:
+                    raise TranslateException("Неправильный формат: " + current_token)
+                match recognise_token(code[i + 2]):
+                    case TokenType.STRING:
+                        add_print_string(code[i + 2])
+                    case TokenType.CHAR:
+                        add_print_char(code[i + 2][1])
+                    case TokenType.VAR_VALUE:
+                        if code[i + 2] not in variables: raise VarException("Переменной не существует: " + code[i + 2])
+                        match variables[code[i + 2]][0]:
+                            case DataType.CHAR:
+                                create_operation(Opcode.LD, variables[code[i + 2]][1], Addressing.MEM)
+                                create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
+                            case DataType.INT:
+                                create_operation(Opcode.LD, variables[code[i + 2]][1], Addressing.MEM)
+                                add_print_number()
+                            case DataType.POINTER:
+                                create_operation(Opcode.LD, variables[code[i + 2]][1], Addressing.MEM)
+                                add_print_pointer()
+                    case _:
+                        create_math(code[i + 2])
+                        add_print_number()
+                i += 3
+
+            case TokenType.READ:
+                if recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN or recognise_token(code[i + 3]) != TokenType.QUOTE_ROUND_CLOSE or recognise_token(code[i + 2]) != TokenType.VAR_VALUE:
+                    raise TranslateException("Неправильный формат: " + current_token)
+                var_name = code[i + 2]
+                if var_name not in variables: raise VarException("Переменной не существует: " + code[i + 2])
+                match variables[var_name][0]:
+                    case DataType.CHAR:
+                        create_operation(Opcode.LD, IO_IN_MEM, Addressing.MEM)
+                        create_operation(Opcode.ST, variables[var_name][1], Addressing.MEM)
+                    case DataType.POINTER:
+                        pass
+                    case _:
+                        raise VarException("Считать можно либо в символ, либо в указатель: " + current_token)
+                i += 3
+
+            case _:
+                raise TranslateException("Неизвестный токен: " + current_token)
         i += 1
 
 
