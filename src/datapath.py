@@ -51,6 +51,9 @@ class Alu:
     def inc(self):
         self.result = self.left + 1
 
+    def neg(self):
+        self.result = -self.left
+
     def remainder_of_division(self):
         self.result = self.left % self.right
 

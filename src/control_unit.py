@@ -1,8 +1,11 @@
 from src.datapath import Datapath, Flag
 from src.isa import Instruction, Opcode, Addressing
 
+
 def is_instruction_address(instruction: Instruction):
     return instruction.opcode in [Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.DIV, Opcode.MOD, Opcode.LD, Opcode.ST]
+
+
 class ControlUnit:
     output: list[chr]
     datapath: Datapath
@@ -59,6 +62,7 @@ class ControlUnit:
         self.datapath.alu.latch_right(operand)
         self.datapath.alu.add()
         self.datapath.ip_register.latch(self.datapath.alu.get_result())
+
     def operand_fetch(self):
         self.datapath.data_memory.latch_read()
         self.datapath.data_register.latch(self.datapath.data_memory.get_data_out())
@@ -69,6 +73,7 @@ class ControlUnit:
         out = [chr(i) for i in self.output]
         print(''.join(out))
         print('--------')
+
     def simulate(self):
         i = 0
         while i < self.instruction_limit:
@@ -125,7 +130,8 @@ class ControlUnit:
                             self.current_input_index += 1
                     self.datapath.latch_flags()
                 case Opcode.ST:
-                    if current_instruction.addressing == Addressing.DIR: raise Exception("Невозможно провести операцию ST При прямой адрессации: " + str(current_instruction))
+                    if current_instruction.addressing == Addressing.DIR: raise Exception(
+                        "Невозможно провести операцию ST При прямой адрессации: " + str(current_instruction))
                     if current_instruction.operand == 0 and current_instruction.addressing == Addressing.MEM: self.new_symbol_on_output = True
                     self.datapath.data_memory.latch_write(self.datapath.acc.get_value())
                 case Opcode.PUSH:
@@ -149,6 +155,11 @@ class ControlUnit:
                     self.datapath.alu.inc()
                     self.datapath.acc.latch(self.datapath.alu.get_result())
                     self.datapath.latch_flags()
+                case Opcode.NEG:
+                    self.datapath.alu.latch_left(self.datapath.acc.get_value())
+                    self.datapath.alu.neg()
+                    self.datapath.acc.latch(self.datapath.alu.get_result())
+                    self.datapath.latch_flags()
                 case Opcode.JMP:
                     self.jump_to(current_instruction.operand)
                 case Opcode.JZ:
@@ -156,22 +167,25 @@ class ControlUnit:
                 case Opcode.JNZ:
                     if self.datapath.flags[Flag.ZF] == False: self.jump_to(current_instruction.operand)
                 case Opcode.JBZ:
-                    if self.datapath.flags[Flag.ZF] == True or self.datapath.flags[Flag.NF] == True: self.jump_to(current_instruction.operand)
+                    if self.datapath.flags[Flag.ZF] == True or self.datapath.flags[Flag.NF] == True: self.jump_to(
+                        current_instruction.operand)
                 case Opcode.JB:
-                    if self.datapath.flags[Flag.ZF] == False and self.datapath.flags[Flag.NF] == True: self.jump_to(current_instruction.operand)
+                    if self.datapath.flags[Flag.ZF] == False and self.datapath.flags[Flag.NF] == True: self.jump_to(
+                        current_instruction.operand)
                 case Opcode.JAZ:
-                    if self.datapath.flags[Flag.ZF] == True or self.datapath.flags[Flag.NF] == False: self.jump_to(current_instruction.operand)
+                    if self.datapath.flags[Flag.ZF] == True or self.datapath.flags[Flag.NF] == False: self.jump_to(
+                        current_instruction.operand)
                 case Opcode.JA:
-                    if self.datapath.flags[Flag.ZF] == False and self.datapath.flags[Flag.NF] == False: self.jump_to(current_instruction.operand)
+                    if self.datapath.flags[Flag.ZF] == False and self.datapath.flags[Flag.NF] == False: self.jump_to(
+                        current_instruction.operand)
                 case Opcode.HLT:
                     self.show_output()
                     return
             print('--------')
             print("Номер итерации: " + str(i))
             print(current_instruction)
-            print("ACC: " + str(self.datapath.acc.get_value()) + ", IP: " + str(self.datapath.ip_register.get_value()))
+            print("ACC: " + str(self.datapath.acc.get_value()) + ", IP: " + str(self.datapath.ip_register.get_value()) + ", SP: " + str(self.datapath.sp_register.get_value()))
             if self.new_symbol_on_output:
                 self.new_symbol_on_output = False
                 self.output.append(self.datapath.data_memory.memory[0])
             i += 1
-

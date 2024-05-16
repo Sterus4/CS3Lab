@@ -20,6 +20,7 @@ class Opcode(str, Enum):
     MOD = "mod"
 
     INC = "inc"
+    NEG = "neg"
 
     # Память
     LD = "ld"

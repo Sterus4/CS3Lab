@@ -89,7 +89,6 @@ def create_math(statement):
     global current_free_data_address
     global variables
     expression = create_rpn_expression(statement.strip())
-    print(expression)
     for i in expression:
         if i.isdigit():
             create_operation(Opcode.LD, i, Addressing.DIR)
@@ -181,8 +180,32 @@ def add_print_number():  # Число уже находится в аккуму�
     global current_instruction_address
     global current_free_data_address
     global variables
-    pass
-
+    create_operation(Opcode.ST, current_free_data_address + 1, Addressing.MEM)
+    create_operation(Opcode.JA, current_instruction_address + 2)
+    create_operation(Opcode.NEG)
+    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
+    create_operation(Opcode.LD, 0, Addressing.DIR)
+    create_operation(Opcode.PUSH)
+    create_operation(Opcode.LD, current_free_data_address, Addressing.MEM)
+    index_to_jump = result[-1].address + 1
+    create_operation(Opcode.MOD, 10, Addressing.DIR)
+    create_operation(Opcode.ADD, 48, Addressing.DIR)
+    create_operation(Opcode.PUSH)
+    create_operation(Opcode.LD, current_free_data_address, Addressing.MEM)
+    create_operation(Opcode.DIV, 10, Addressing.DIR)
+    create_operation(Opcode.JZ, current_instruction_address + 3)
+    create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
+    create_operation(Opcode.JMP, index_to_jump)
+    create_operation(Opcode.LD, current_free_data_address + 1, Addressing.MEM)
+    create_operation(Opcode.JA, current_instruction_address + 3)
+    create_operation(Opcode.LD, 45, Addressing.DIR)
+    create_operation(Opcode.PUSH)
+    # После того как число оказалось в стеке, выводим его
+    index_to_jump = result[-1].address + 1
+    create_operation(Opcode.POP)
+    create_operation(Opcode.JZ, current_instruction_address + 3)
+    create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
+    create_operation(Opcode.JMP, index_to_jump)
 
 def add_read_pointer(variable_address: int):
     global current_instruction_address
