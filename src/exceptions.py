@@ -16,3 +16,7 @@ class VarException(Exception):
 
 class MathExpressionException(Exception):
     """Выбрасывается, если обнаружена ошибка в математическом выражении"""
+
+
+class AluException(Exception):
+    """Выбрасывается, если обнаружена ошибка в АЛУ"""

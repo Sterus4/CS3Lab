@@ -2,11 +2,12 @@ import json
 from enum import Enum
 
 
+
 class Addressing(str, Enum):
     DIR = "direct"  # Прямая загрузка
     MEM = "mem"  # Прямая адресация
-    SP = "sp"  # Адресация относительно стека
-    IND = "ind"  # Косвенная адресация
+    SP = "sp"  # Адресация относительно стека (Смещение 0 или -1)
+    IND_MEM = "ind_mem"  # Косвенная адресация
 
 
 class Opcode(str, Enum):
@@ -23,6 +24,7 @@ class Opcode(str, Enum):
     # Память
     LD = "ld"
     ST = "st"
+
     PUSH = "push"
     POP = "pop"
 
@@ -51,6 +53,15 @@ class Instruction:
         self.operand = operand
         self.addressing = addressing
 
+    def __str__(self):
+        return "Address: " + str(self.address) + ", Opcode: " + str(self.opcode) + ", Operand: " + str(
+            self.operand) + ", Addressing: " + str(self.addressing) + '.'
+
+
+def create_instr(json_dict: dict) -> Instruction:
+    return Instruction(int(json_dict["address"]), Opcode(json_dict["opcode"]), json_dict["operand"],
+                       json_dict["addressing"])
+
 
 def write_code(file: str, instructions: list[Instruction]):
     with open(file, "w", encoding="utf-8") as f:
@@ -60,3 +71,12 @@ def write_code(file: str, instructions: list[Instruction]):
                 {"address": instruction.address, "opcode": instruction.opcode, "operand": instruction.operand,
                  "addressing": instruction.addressing}))
         f.write("[" + ",\n".join(buf) + "]")
+
+
+def read_code(file: str) -> list[Instruction]:
+    instructions = []
+    with open(file, "r", encoding="utf-8") as f:
+        json_file = json.loads(f.read())
+    for i in json_file:
+        instructions.append(create_instr(i))
+    return instructions

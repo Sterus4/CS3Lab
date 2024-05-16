@@ -1,4 +1,5 @@
 import re
+import sys
 from enum import Enum
 
 from src.exceptions import *
@@ -163,7 +164,7 @@ def add_print_pointer():  # В Acc адрес начала строки
     global variables
     create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
     index_to_jump = len(result)
-    create_operation(Opcode.LD, current_free_data_address, Addressing.IND)
+    create_operation(Opcode.LD, current_free_data_address, Addressing.IND_MEM)
 
     #TODO как будем делать LD? Через алу?
     create_operation(Opcode.SUB, 0, Addressing.DIR)
@@ -177,7 +178,33 @@ def add_print_pointer():  # В Acc адрес начала строки
 
 
 def add_print_number():  # Число уже находится в аккумуляторе
+    global current_instruction_address
+    global current_free_data_address
+    global variables
     pass
+
+
+def add_read_pointer(variable_address: int):
+    global current_instruction_address
+    global current_free_data_address
+    global variables
+    create_operation(Opcode.LD, variable_address, Addressing.MEM)
+    create_operation(Opcode.PUSH)
+    index_to_jump = len(result)
+
+    create_operation(Opcode.LD, IO_IN_MEM, Addressing.MEM)
+    create_operation(Opcode.ST, variable_address, Addressing.IND_MEM)
+    # TODO как будем делать LD? Через алу?
+    create_operation(Opcode.SUB, 0, Addressing.DIR)
+    # TODO УБЕРИ ЭТО ЕСЛИ РАЗОБРАЛСЯ + Поправь адреса без одной команды
+    create_operation(Opcode.JZ, current_instruction_address + 5)
+    create_operation(Opcode.LD, variable_address, Addressing.MEM)
+    create_operation(Opcode.INC)
+    create_operation(Opcode.ST, variable_address, Addressing.MEM)
+    create_operation(Opcode.JMP, index_to_jump)
+
+    create_operation(Opcode.POP)
+    create_operation(Opcode.ST, variable_address, Addressing.MEM)
 
 
 def create_reverse_sign(comparison_sign: str):
@@ -367,7 +394,9 @@ def create_code(code: list[str]):
                 i += 3
 
             case TokenType.READ:
-                if recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN or recognise_token(code[i + 3]) != TokenType.QUOTE_ROUND_CLOSE or recognise_token(code[i + 2]) != TokenType.VAR_VALUE:
+                if recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN or recognise_token(
+                        code[i + 3]) != TokenType.QUOTE_ROUND_CLOSE or recognise_token(
+                    code[i + 2]) != TokenType.VAR_VALUE:
                     raise TranslateException("Неправильный формат: " + current_token)
                 var_name = code[i + 2]
                 if var_name not in variables: raise VarException("Переменной не существует: " + code[i + 2])
@@ -376,7 +405,7 @@ def create_code(code: list[str]):
                         create_operation(Opcode.LD, IO_IN_MEM, Addressing.MEM)
                         create_operation(Opcode.ST, variables[var_name][1], Addressing.MEM)
                     case DataType.POINTER:
-                        pass
+                        add_read_pointer(variables[var_name][1])
                     case _:
                         raise VarException("Считать можно либо в символ, либо в указатель: " + current_token)
                 i += 3
@@ -422,9 +451,9 @@ def translate(src: str) -> list[Instruction]:
             n = len(key_word)
             if temp[:n] != key_word:
                 continue
-            if temp[n] != '(' or temp[-1] != ')':
+            if '(' not in temp or temp[-1] != ')':
                 raise InvalidToken("Ошибка в строке: " + temp)
-            code_modified.extend([key_word, '(', temp[n + 1:-1].strip(), ')'])
+            code_modified.extend([key_word, '(', temp[temp.find('(') + 1:-1].strip(), ')'])
             modified = True
         if not modified: code_modified.append(temp)
     code = code_modified.copy()
@@ -447,6 +476,5 @@ def main(source: str, target: str):
 
 
 if __name__ == '__main__':
-    #assert len(sys.argv) == 3, "Wrong arguments: translator.py <input_file> <target_file>"
-    #main(sys.argv[1], sys.argv[2])
-    main("input.txt", "output.txt")
+    assert len(sys.argv) == 3, "Wrong arguments: translator.py <input_file> <target_file>"
+    main(sys.argv[1], sys.argv[2])
