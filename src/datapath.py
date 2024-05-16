@@ -11,6 +11,9 @@ class Register:
     def latch(self, value):
         self.value = value
 
+    def get_value(self):
+        return self.value
+
 
 class Flag(str, Enum):
     NF = "negative flag"
@@ -18,16 +21,19 @@ class Flag(str, Enum):
 
 
 class Alu:
+    left: int
+    right: int
+    result: int
     def __init__(self):
         self.left = 0
         self.right = 0
         self.result = 0
 
     def latch_left(self, value):
-        self.left = value
+        self.left = int(value)
 
     def latch_right(self, value):
-        self.right = value
+        self.right = int(value)
 
     def add(self):
         self.result = self.right + self.left
@@ -37,7 +43,7 @@ class Alu:
 
     def divide(self):
         if self.right == 0: raise AluException("Деление на ноль - runtime error")
-        self.result = self.result / self.left
+        self.result = int(self.left / self.right)
 
     def multiply(self):
         self.result = self.left * self.right
@@ -47,6 +53,9 @@ class Alu:
 
     def remainder_of_division(self):
         self.result = self.left % self.right
+
+    def get_result(self):
+        return self.result
 
 
 class DataMemory:
@@ -67,6 +76,9 @@ class DataMemory:
     def latch_write(self, value: int):
         self.memory[self.address_in] = value
 
+    def get_data_out(self):
+        return self.data_out
+
 
 class InstructionMemory:
     memory: list[Instruction]
@@ -83,6 +95,9 @@ class InstructionMemory:
     def latch_read_instruction(self):
         self.instruction_out = self.memory[self.address_in]
 
+    def get_instruction(self) -> Instruction:
+        return self.instruction_out
+
 
 class Datapath:
     flags: dict[Flag, bool]
@@ -98,12 +113,12 @@ class Datapath:
 
     alu: Alu
 
-    def __init__(self, acc_value, ip_value, data_size: int, instructions: list[Instruction]):
+    def __init__(self, acc_value: int, ip_value: int, data_size: int, instructions: list[Instruction]):
         self.acc = Register(acc_value)
         self.ip_register = Register(ip_value)
         self.command_register = Register(0)
         self.data_register = Register(0)
-        self.sp_register = Register(0)
+        self.sp_register = Register(data_size)
 
         self.data_memory = DataMemory(data_size, 0)
         self.instruction_memory = InstructionMemory(instructions)

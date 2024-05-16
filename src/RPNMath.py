@@ -85,7 +85,7 @@ def create_rpn_expression(src: str) -> list[str]:
     src = src_copy.copy()
     expression = toRPN(src)
     print(expression)
-
+    print(expression)
     if not check_equation(expression):
         raise MathExpressionException("Неверное математическое выражение: " + temp)
     return expression

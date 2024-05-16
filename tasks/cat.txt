@@ -1,0 +1,6 @@
+char a;
+read(a);
+while(a > 0){
+    print(a);
+    read(a);
+}

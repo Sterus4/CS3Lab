@@ -28,8 +28,9 @@ class Opcode(str, Enum):
     PUSH = "push"
     POP = "pop"
 
-    # Условные переходы
+    # Переходы
     JMP = "jmp"
+
     JNZ = "jnz"
     JZ = "jz"
     JBZ = "jbz"
