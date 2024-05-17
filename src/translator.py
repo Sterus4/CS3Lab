@@ -144,9 +144,6 @@ def find_end_of_block(code: list[str], start_position: int) -> int:
 
 
 def add_print_char(src: chr):
-    global current_instruction_address
-    global current_free_data_address
-    global variables
     create_operation(Opcode.LD, ord(src), Addressing.DIR)
     create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
 
@@ -206,6 +203,7 @@ def add_print_number():  # Число уже находится в аккуму�
     create_operation(Opcode.JZ, current_instruction_address + 3)
     create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
     create_operation(Opcode.JMP, index_to_jump)
+
 
 def add_read_pointer(variable_address: int):
     global current_instruction_address
@@ -302,11 +300,12 @@ def create_code(code: list[str]):
                     "Нельзя проинициализировать массив из 0 элементов: " + current_token)
                 operand = None
                 if '=' in current_token:
-                    operand = current_token.split('=')[1].strip()
+                    operand = current_token[current_token.find('=') + 1:].strip()
                     if operand == '': raise VarException(current_token + ": ожидалась инициализация")
                 variables[var_name] = (DataType.POINTER, current_free_data_address)
                 if var_capacity == -1 and operand is None: raise InvalidToken("Неизвестный токен: " + current_token)
                 if var_capacity == -1:
+                    print(operand)
                     if recognise_token(operand) != TokenType.STRING: raise InvalidToken(
                         "Неизвестный токен: " + current_token)
                     create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
