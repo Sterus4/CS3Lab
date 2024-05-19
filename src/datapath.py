@@ -65,16 +65,18 @@ class DataMemory:
     memory: list[int]
     address_in: int
     data_out: int
+    address_register: Register
 
-    def __init__(self, data_size: int, init_value: int):
+    def __init__(self, address_register: Register, data_size: int, init_value: int):
         self.memory = [init_value] * data_size
         self.address_in = 0
+        self.address_register = address_register
 
     def latch_read(self):
         self.data_out = self.memory[self.address_in]
 
-    def latch_in(self, address: int):
-        self.address_in = address
+    def latch_in(self):
+        self.address_in = self.address_register.get_value()
 
     def latch_write(self, value: int):
         self.memory[self.address_in] = value
@@ -113,6 +115,7 @@ class Datapath:
     command_register: Register
     data_register: Register
     sp_register: Register
+    data_address_register: Register
 
     alu: Alu
 
@@ -121,9 +124,10 @@ class Datapath:
         self.ip_register = Register(ip_value)
         self.command_register = Register(0)
         self.data_register = Register(0)
+        self.data_address_register = Register(0)
         self.sp_register = Register(data_size)
 
-        self.data_memory = DataMemory(data_size, 0)
+        self.data_memory = DataMemory(self.data_address_register,  data_size, 0)
         self.instruction_memory = InstructionMemory(instructions)
 
         self.flags = {Flag.NF: False, Flag.ZF: False}

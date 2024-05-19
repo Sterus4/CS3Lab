@@ -37,17 +37,20 @@ class ControlUnit:
                 self.datapath.alu.latch_left(0)
                 self.datapath.alu.latch_right(operand)
                 self.datapath.alu.add()
-                self.datapath.data_memory.latch_in(self.datapath.alu.get_result())
+                self.datapath.data_address_register.latch(self.datapath.alu.get_result())
+                self.datapath.data_memory.latch_in()
             case Addressing.SP:
                 self.datapath.alu.latch_left(self.datapath.sp_register.get_value())
                 self.datapath.alu.latch_right(operand)
                 self.datapath.alu.add()
-                self.datapath.data_memory.latch_in(self.datapath.alu.get_result())
+                self.datapath.data_address_register.latch(self.datapath.alu.get_result())
+                self.datapath.data_memory.latch_in()
             case Addressing.IND_MEM:
                 self.datapath.alu.latch_left(0)
                 self.datapath.alu.latch_right(operand)
                 self.datapath.alu.add()
-                self.datapath.data_memory.latch_in(self.datapath.alu.get_result())
+                self.datapath.data_address_register.latch(self.datapath.alu.get_result())
+                self.datapath.data_memory.latch_in()
 
                 self.datapath.data_memory.latch_read()
                 self.datapath.data_register.latch(self.datapath.data_memory.get_data_out())
@@ -55,7 +58,8 @@ class ControlUnit:
                 self.datapath.alu.latch_left(0)
                 self.datapath.alu.latch_right(self.datapath.data_register.get_value())
                 self.datapath.alu.add()
-                self.datapath.data_memory.latch_in(self.datapath.alu.get_result())
+                self.datapath.data_address_register.latch(self.datapath.alu.get_result())
+                self.datapath.data_memory.latch_in()
 
     def jump_to(self, operand: int):
         self.datapath.alu.latch_left(0)
@@ -135,11 +139,13 @@ class ControlUnit:
                     if current_instruction.operand == 0 and current_instruction.addressing == Addressing.MEM: self.new_symbol_on_output = True
                     self.datapath.data_memory.latch_write(self.datapath.acc.get_value())
                 case Opcode.PUSH:
-                    self.datapath.data_memory.latch_in(self.datapath.sp_register.get_value() - 1)
+                    self.datapath.data_address_register.latch(self.datapath.sp_register.get_value() - 1)
+                    self.datapath.data_memory.latch_in()
                     self.datapath.sp_register.latch(self.datapath.sp_register.get_value() - 1)
                     self.datapath.data_memory.latch_write(self.datapath.acc.get_value())
                 case Opcode.POP:
-                    self.datapath.data_memory.latch_in(self.datapath.sp_register.get_value())
+                    self.datapath.data_address_register.latch(self.datapath.sp_register.get_value())
+                    self.datapath.data_memory.latch_in()
                     self.datapath.sp_register.latch(self.datapath.sp_register.get_value() + 1)
                     self.datapath.data_memory.latch_read()
                     self.datapath.data_register.latch(self.datapath.data_memory.get_data_out())
