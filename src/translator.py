@@ -492,6 +492,7 @@ def translate(src: str) -> list[Instruction]:
 def main(source: str, target: str):
     with open(source, 'r', encoding='utf-8') as f:
         source = f.read()
+    source = re.sub(r'#.*\n', '', source)
     code = translate(source)
     write_code(target, code)
     print("Файл транслирован")
