@@ -89,16 +89,18 @@ class InstructionMemory:
     memory: list[Instruction]
     address_in: int
     instruction_out: Instruction
+    start_address: int
 
-    def __init__(self, instructions: list[Instruction]):
+    def __init__(self, instructions: list[Instruction], start_address: int):
         self.address_in = 0
         self.memory = instructions
+        self.start_address = start_address
 
     def latch_in(self, address: int):
         self.address_in = address
 
     def latch_read_instruction(self):
-        self.instruction_out = self.memory[self.address_in]
+        self.instruction_out = self.memory[self.address_in - self.start_address]
 
     def get_instruction(self) -> Instruction:
         return self.instruction_out
@@ -128,7 +130,7 @@ class Datapath:
         self.sp_register = Register(data_size)
 
         self.data_memory = DataMemory(self.data_address_register,  data_size, 0)
-        self.instruction_memory = InstructionMemory(instructions)
+        self.instruction_memory = InstructionMemory(instructions, instructions[0].address)
 
         self.flags = {Flag.NF: False, Flag.ZF: False}
 

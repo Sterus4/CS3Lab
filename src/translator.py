@@ -76,7 +76,7 @@ def recognise_token(src: str) -> TokenType:
 key_words = ["while", "if", "read", "print"]
 variables: dict[str, tuple[DataType, int]] = dict()
 current_free_data_address = 10
-current_instruction_address = 0
+current_instruction_address = 200
 result: list[Instruction] = list()
 
 
@@ -159,11 +159,11 @@ def add_print_pointer():  # В Acc адрес начала строки
     global current_free_data_address
     global variables
     create_operation(Opcode.ST, current_free_data_address, Addressing.MEM)
-    index_to_jump = len(result)
+    index_to_jump = result[-1].address + 1
     create_operation(Opcode.LD, current_free_data_address, Addressing.IND_MEM)
 
     #TODO как будем делать LD? Через алу?
-    create_operation(Opcode.SUB, 0, Addressing.DIR)
+    #create_operation(Opcode.SUB, 0, Addressing.DIR)
     #TODO УБЕРИ ЭТО ЕСЛИ РАЗОБРАЛСЯ + Поправь адреса без одной команды
     create_operation(Opcode.JZ, current_instruction_address + 6)
     create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
@@ -211,12 +211,12 @@ def add_read_pointer(variable_address: int):
     global variables
     create_operation(Opcode.LD, variable_address, Addressing.MEM)
     create_operation(Opcode.PUSH)
-    index_to_jump = len(result)
+    index_to_jump = result[-1].address + 1
 
     create_operation(Opcode.LD, IO_IN_MEM, Addressing.MEM)
     create_operation(Opcode.ST, variable_address, Addressing.IND_MEM)
     # TODO как будем делать LD? Через алу?
-    create_operation(Opcode.SUB, 0, Addressing.DIR)
+    #create_operation(Opcode.SUB, 0, Addressing.DIR)
     # TODO УБЕРИ ЭТО ЕСЛИ РАЗОБРАЛСЯ + Поправь адреса без одной команды
     create_operation(Opcode.JZ, current_instruction_address + 5)
     create_operation(Opcode.LD, variable_address, Addressing.MEM)
@@ -368,10 +368,10 @@ def create_code(code: list[str]):
                 start_of_block, end_of_block = i + 4, find_end_of_block(code, i + 4)
                 left, comparison_sign, right = re.split(r'(!=|==|>=|<=|>|<)', code[i + 2])
                 create_comparison(left, right)
-                comparison_index = len(result)
+                comparison_index = result[-1].address + 1
                 create_reverse_sign(comparison_sign)
                 create_code(code[start_of_block + 1: end_of_block])
-                result[comparison_index].operand = current_instruction_address
+                result[comparison_index - result[0].address].operand = current_instruction_address
                 i = end_of_block
             case TokenType.WHILE:
                 if (recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
@@ -383,10 +383,10 @@ def create_code(code: list[str]):
                 left, comparison_sign, right = re.split(r'(==|>=|<=|>|<)', code[i + 2])
                 while_start = current_instruction_address
                 create_comparison(left, right)
-                comparison_index = len(result)
+                comparison_index = result[-1].address + 1
                 create_reverse_sign(comparison_sign)
                 create_code(code[start_of_block + 1: end_of_block])
-                result[comparison_index].operand = current_instruction_address + 1
+                result[comparison_index - result[0].address].operand = current_instruction_address + 1
                 create_operation(Opcode.JMP, while_start)
                 i = end_of_block
             case TokenType.PRINT:
