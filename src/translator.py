@@ -58,7 +58,7 @@ def recognise_token(src: str) -> TokenType:
         return TokenType.QUOTE_ROUND_CLOSE
     if is_char(src):
         return TokenType.CHAR
-    if re.match(r"^[\s()0123456789\w*/%+-]+(==|>|<|>=|<=)[\s()0123456789\w*/%+-]+$", src):
+    if re.match(r"^[\s()0123456789\w*/%+-]+(!=|==|>|<|>=|<=)[\s()0123456789\w*/%+-]+$", src):
         return TokenType.COMPARISON
     if src == 'print':
         return TokenType.PRINT
@@ -366,7 +366,7 @@ def create_code(code: list[str]):
                         or recognise_token(code[i + 4]) != TokenType.QUOTE_FIGURE_OPEN):
                     raise TranslateException("Неправильный формат if выражения: " + str(code[i:i + 4]))
                 start_of_block, end_of_block = i + 4, find_end_of_block(code, i + 4)
-                left, comparison_sign, right = re.split(r'(==|>=|<=|>|<)', code[i + 2])
+                left, comparison_sign, right = re.split(r'(!=|==|>=|<=|>|<)', code[i + 2])
                 create_comparison(left, right)
                 comparison_index = len(result)
                 create_reverse_sign(comparison_sign)
