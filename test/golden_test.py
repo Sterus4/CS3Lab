@@ -9,7 +9,7 @@ import pytest
 from src import translator, machine
 
 
-@pytest.mark.golden_test("golden/*.yml")
+@pytest.mark.golden_test("../golden/*.yml")
 def test_whole_by_golden(golden, caplog):
     caplog.set_level(logging.DEBUG)
 
@@ -31,4 +31,4 @@ def test_whole_by_golden(golden, caplog):
             code = file.read()
         assert code == golden.out["out_code"]
         assert stdout.getvalue() == golden.out["out_output"]
-        assert caplog.text[:min(len(caplog.text), 60000)] == golden.out["out_log"]
+        assert caplog.text == golden.out["out_log"]
