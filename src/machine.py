@@ -12,13 +12,6 @@ def main(target_program, input_src):
     with open(input_src) as input_file:
         input_char_list = [ord(i) for i in input_file.read()]
         input_char_list.append(0)
-    #print("------")
-    #print("Входные инструкции:")
-    #for i in instructions:
-    #    print(i)
-    #print("Входные данные:")
-    #print(input_char_list)
-    #print("------")
 
     control_unit = ControlUnit(input_char_list, datapath, 10_000)
     control_unit.simulate()

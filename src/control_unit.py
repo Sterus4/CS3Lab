@@ -97,7 +97,8 @@ class ControlUnit:
         self.datapath.data_register.latch(self.datapath.data_memory.get_data_out())
         self.tick()
 
-    def show_output(self):
+    def show_output(self, i: int):
+        print("Исполнено инструкций: {ins}, Тиков выполнено: {tick}".format(ins=i, tick=self.current_tick_counter))
         print("Вывод программы: ")
         print('--------')
         out = [chr(i) for i in self.output]
@@ -224,7 +225,7 @@ class ControlUnit:
                     if self.datapath.flags[Flag.ZF] == False and self.datapath.flags[Flag.NF] == False: self.jump_to(
                         current_instruction.operand)
                 case Opcode.HLT:
-                    self.show_output()
+                    self.show_output(i)
                     return
             if self.new_symbol_on_output:
                 self.new_symbol_on_output = False

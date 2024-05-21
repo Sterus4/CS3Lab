@@ -253,7 +253,6 @@ def create_code(code: list[str]):
     i = 0
     while i < len(code):
         current_token = code[i]
-        #print(recognise_token(current_token))
         match recognise_token(current_token):
             case TokenType.CREATE_NEW_VAR:
                 var_type = current_token.split()[0]
@@ -264,7 +263,6 @@ def create_code(code: list[str]):
                 if '=' in current_token:
                     operand = current_token.split('=')[1].strip()
                     if operand == '': raise VarException(current_token + ": ожидалась инициализация")
-                #print(var_type, var_name, operand)
                 variables[var_name] = (DataType.CHAR if var_type == "char" else DataType.INT, current_free_data_address)
                 if var_type == "int":
                     if operand is None:
@@ -305,7 +303,6 @@ def create_code(code: list[str]):
                 variables[var_name] = (DataType.POINTER, current_free_data_address)
                 if var_capacity == -1 and operand is None: raise InvalidToken("Неизвестный токен: " + current_token)
                 if var_capacity == -1:
-                    print(operand)
                     if recognise_token(operand) != TokenType.STRING: raise InvalidToken(
                         "Неизвестный токен: " + current_token)
                     create_operation(Opcode.LD, current_free_data_address + 1, Addressing.DIR)
@@ -328,7 +325,6 @@ def create_code(code: list[str]):
                     if operand is not None:
                         local_free_data_address = current_free_data_address
                         operand = operand[1:-1]
-                        print(len(operand))
                         count = 0
                         for char in operand:
                             if count >= min(var_capacity - 1, len(operand)):
@@ -341,7 +337,6 @@ def create_code(code: list[str]):
                         create_operation(Opcode.ST, local_free_data_address, Addressing.MEM)
 
                     current_free_data_address += var_capacity
-                print(var_capacity, var_name, operand)
             case TokenType.UPDATE_VAR:
                 var_name, operand = current_token.split('=')[0].strip(), current_token.split('=')[1].strip()
                 if var_name not in variables: raise VarException(
@@ -480,11 +475,9 @@ def translate(src: str) -> list[Instruction]:
         if not modified: code_modified.append(temp)
     code = code_modified.copy()
     # Код разбит на лексемы
-    print(code)
+    #print(code)
 
     create_code(code)
-    for temp in variables:
-        print(temp, ' : ', variables[temp][0], variables[temp][1])
     create_operation(Opcode.HLT)
     return result
 
