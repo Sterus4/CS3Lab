@@ -56,8 +56,7 @@ class Instruction:
         self.addressing = addressing
 
     def __str__(self):
-        return "Address: " + str(self.address) + ", Opcode: " + str(self.opcode) + ", Operand: " + str(
-            self.operand) + ", Addressing: " + str(self.addressing) + '.'
+        return self.opcode + " -> " + str(self.operand) + " | " + str(self.addressing)
 
 
 def create_instr(json_dict: dict) -> Instruction:
