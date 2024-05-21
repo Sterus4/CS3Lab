@@ -1,6 +1,6 @@
 import re
 
-from exceptions import MathExpressionException
+from src.exceptions import MathExpressionException
 
 
 def toRPN(s: list) -> list:

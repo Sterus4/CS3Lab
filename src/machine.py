@@ -1,5 +1,5 @@
 import sys
-from isa import read_code
+from src.isa import read_code
 from src.control_unit import ControlUnit
 from src.datapath import Datapath
 
