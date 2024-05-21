@@ -24,6 +24,7 @@ class Alu:
     left: int
     right: int
     result: int
+
     def __init__(self):
         self.left = 0
         self.right = 0
@@ -42,7 +43,8 @@ class Alu:
         self.result = self.left - self.right
 
     def divide(self):
-        if self.right == 0: raise AluException("Деление на ноль - runtime error")
+        if self.right == 0:
+            raise AluException("Деление на ноль - runtime error")
         self.result = int(self.left / self.right)
 
     def multiply(self):
@@ -121,7 +123,13 @@ class Datapath:
 
     alu: Alu
 
-    def __init__(self, acc_value: int, ip_value: int, data_size: int, instructions: list[Instruction]):
+    def __init__(
+        self,
+        acc_value: int,
+        ip_value: int,
+        data_size: int,
+        instructions: list[Instruction],
+    ):
         self.acc = Register(acc_value)
         self.ip_register = Register(ip_value)
         self.command_register = Register(0)
@@ -129,8 +137,10 @@ class Datapath:
         self.data_address_register = Register(0)
         self.sp_register = Register(data_size)
 
-        self.data_memory = DataMemory(self.data_address_register,  data_size, 0)
-        self.instruction_memory = InstructionMemory(instructions, instructions[0].address)
+        self.data_memory = DataMemory(self.data_address_register, data_size, 0)
+        self.instruction_memory = InstructionMemory(
+            instructions, instructions[0].address
+        )
 
         self.flags = {Flag.NF: False, Flag.ZF: False}
 

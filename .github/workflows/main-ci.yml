@@ -14,6 +14,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install pytest-golden
+        pip install ruff
     - name: Testing
       run: |
         pytest -v
+
+    - name: Check format
+      run: ruff format --check .
+
+    - name: Check linter
+      run: ruff check .
+

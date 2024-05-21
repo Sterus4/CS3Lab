@@ -15,11 +15,12 @@ def toRPN(s: list) -> list:
                 li.append(i)
             else:
                 while li and (
-                        priority[li[-1]] > priority[i] or
-                        priority[li[-1]] == priority[i] and i not in right_associative_operators
+                    priority[li[-1]] > priority[i]
+                    or priority[li[-1]] == priority[i]
+                    and i not in right_associative_operators
                 ):
                     result.append(li.pop())
-                if i == ')':
+                if i == ")":
                     li.pop()
                 else:
                     li.append(i)
@@ -34,9 +35,9 @@ def toRPN(s: list) -> list:
 def check_quotes(src: str) -> bool:
     i = 0
     for c in src:
-        if c == '(':
+        if c == "(":
             i += 1
-        elif c == ')':
+        elif c == ")":
             i -= 1
         if i < 0:
             return False
@@ -63,24 +64,26 @@ def check_equation(src: list) -> bool:
 
 
 def create_rpn_expression(src: str) -> list[str]:
-    temp = ''.join(src)
-    if not re.fullmatch(r'[\s()0123456789\w*/%+-]+', src):
+    temp = "".join(src)
+    if not re.fullmatch(r"[\s()0123456789\w*/%+-]+", src):
         raise MathExpressionException("Неизвестные символы в выражении: " + src)
     if not check_quotes(src):
-        raise MathExpressionException("В выражении неправильно расставлены скобки: " + src)
-    src = re.sub(r'\+', ' + ', src)
-    src = re.sub(r'\*', ' * ', src)
-    src = re.sub(r'-', ' - ', src)
-    src = re.sub(r'/', ' / ', src)
-    src = re.sub(r'\(', ' ( ', src)
-    src = re.sub(r'\)', ' ) ', src)
-    src = re.split(r'\s+', src)
-    src = [i for i in src if i != '']
+        raise MathExpressionException(
+            "В выражении неправильно расставлены скобки: " + src
+        )
+    src = re.sub(r"\+", " + ", src)
+    src = re.sub(r"\*", " * ", src)
+    src = re.sub(r"-", " - ", src)
+    src = re.sub(r"/", " / ", src)
+    src = re.sub(r"\(", " ( ", src)
+    src = re.sub(r"\)", " ) ", src)
+    src = re.split(r"\s+", src)
+    src = [i for i in src if i != ""]
     src_copy = []
     for i in range(len(src)):
-        if src[i] == '-':
-            if i == 0 or src[i - 1] == '(':
-                src_copy.append('0')
+        if src[i] == "-":
+            if i == 0 or src[i - 1] == "(":
+                src_copy.append("0")
         src_copy.append(src[i])
     src = src_copy.copy()
     expression = toRPN(src)

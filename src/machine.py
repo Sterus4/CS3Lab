@@ -17,6 +17,6 @@ def main(target_program, input_src):
     control_unit.simulate()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     assert len(sys.argv) == 3, "Wrong arguments: machine.py <program> <source_file>"
     main(sys.argv[1], sys.argv[2])

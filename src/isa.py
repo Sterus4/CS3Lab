@@ -2,7 +2,6 @@ import json
 from enum import Enum
 
 
-
 class Addressing(str, Enum):
     DIR = "direct"  # Прямая загрузка
     MEM = "mem"  # Прямая адресация
@@ -48,7 +47,6 @@ class Opcode(str, Enum):
 
 
 class Instruction:
-
     def __init__(self, address: int, opcode: Opcode, operand=None, addressing=None):
         self.address = address
         self.opcode = opcode
@@ -60,17 +58,28 @@ class Instruction:
 
 
 def create_instr(json_dict: dict) -> Instruction:
-    return Instruction(int(json_dict["address"]), Opcode(json_dict["opcode"]), json_dict["operand"],
-                       json_dict["addressing"])
+    return Instruction(
+        int(json_dict["address"]),
+        Opcode(json_dict["opcode"]),
+        json_dict["operand"],
+        json_dict["addressing"],
+    )
 
 
 def write_code(file: str, instructions: list[Instruction]):
     with open(file, "w", encoding="utf-8") as f:
         buf = []
         for instruction in instructions:
-            buf.append(json.dumps(
-                {"address": instruction.address, "opcode": instruction.opcode, "operand": instruction.operand,
-                 "addressing": instruction.addressing}))
+            buf.append(
+                json.dumps(
+                    {
+                        "address": instruction.address,
+                        "opcode": instruction.opcode,
+                        "operand": instruction.operand,
+                        "addressing": instruction.addressing,
+                    }
+                )
+            )
         f.write("[" + ",\n".join(buf) + "]")
 
 
