@@ -100,7 +100,7 @@ class Translator:
                 if len(expression) == 1:
                     break
                 self.create_operation(Opcode.PUSH)
-            elif re.fullmatch("^\w+$", i):
+            elif re.fullmatch(r"^\w+$", i):
                 if i not in self.variables or self.variables[i][0] == DataType.POINTER:
                     raise VarException(
                         "Переменная: "

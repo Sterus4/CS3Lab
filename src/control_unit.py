@@ -34,16 +34,14 @@ class ControlUnit:
         self.new_symbol_on_output = False
         self.current_input_index = 0
         self.current_tick_counter = 0
-        self.control_unit_logger = logging.getLogger("ControlUnit")
-
         logging.basicConfig(level=logging.DEBUG)
         if len(self.source_input) > 0:
             self.datapath.data_memory.memory[1] = source_input[self.current_input_index]
         self.current_input_index += 1
 
     def tick(self):
-        self.control_unit_logger.debug(
-            "Tick: {tick}, IP: {ip}, SP: {sp}, DR: {dr}, AR: {ar}. Instruction: < {instr} >, ACC: {acc}".format(
+        logging.debug(
+            " Tick: {tick}, IP: {ip}, SP: {sp}, DR: {dr}, AR: {ar}. Instruction: < {instr} >, ACC: {acc}".format(
                 tick=self.current_tick_counter,
                 ip=self.datapath.ip_register.get_value(),
                 sp=self.datapath.sp_register.get_value(),
