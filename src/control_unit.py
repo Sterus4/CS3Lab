@@ -25,13 +25,13 @@ class ControlUnit:
     current_tick_counter: int
 
     def __init__(self, datapath: Datapath, instruction_limit: int):
+        logging.getLogger().setLevel(logging.DEBUG)
         self.datapath = datapath
         self.output = []
         self.instruction_limit = instruction_limit
         self.new_symbol_on_output = False
         self.current_input_index = 0
         self.current_tick_counter = 0
-        logging.basicConfig(level=logging.DEBUG)
         self.current_input_index += 1
 
     def tick(self):
