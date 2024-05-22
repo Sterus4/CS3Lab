@@ -281,7 +281,9 @@
 
 ## Модель процессора
 
-Модель реализована в [machine](src/machine.py), которая использует:
+Интерфейс командной строки: `machine.py <machine_code_file> <input_file>`
+
+Реализовано в модуле: [machine](src/machine.py), который использует:
 * [datapath](src/datapath.py)
 * [control unit](src/control_unit.py)
 
