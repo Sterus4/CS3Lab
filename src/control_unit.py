@@ -24,10 +24,7 @@ class ControlUnit:
     current_input_index: int
     current_tick_counter: int
 
-    def __init__(
-        self, source_input: list[int], datapath: Datapath, instruction_limit: int
-    ):
-        self.source_input = source_input
+    def __init__(self, datapath: Datapath, instruction_limit: int):
         self.datapath = datapath
         self.output = []
         self.instruction_limit = instruction_limit
@@ -35,8 +32,6 @@ class ControlUnit:
         self.current_input_index = 0
         self.current_tick_counter = 0
         logging.basicConfig(level=logging.DEBUG)
-        if len(self.source_input) > 0:
-            self.datapath.data_memory.memory[1] = source_input[self.current_input_index]
         self.current_input_index += 1
 
     def tick(self):
@@ -116,8 +111,7 @@ class ControlUnit:
         self.tick()
 
     def operand_fetch(self):
-        self.datapath.data_memory.latch_read()
-        self.datapath.data_register.latch(self.datapath.data_memory.get_data_out())
+        self.datapath.read_operand()
         self.tick()
 
     def show_output(self, i: int):
@@ -128,7 +122,7 @@ class ControlUnit:
         )
         print("Вывод программы: ")
         print("--------")
-        out = [chr(i) for i in self.output]
+        out = [chr(i) for i in self.datapath.standart_out_io.get_all()]
         print("".join(out))
         print("--------")
 
@@ -207,15 +201,6 @@ class ControlUnit:
                     )
                     self.datapath.alu.add()
                     self.datapath.acc.latch(self.datapath.alu.get_result())
-                    if (
-                        current_instruction.operand == 1
-                        and current_instruction.addressing == Addressing.MEM
-                    ):
-                        if self.current_input_index < len(self.source_input):
-                            self.datapath.data_memory.memory[1] = self.source_input[
-                                self.current_input_index
-                            ]
-                            self.current_input_index += 1
                     self.datapath.latch_flags()
                     self.tick()
                 case Opcode.ST:
@@ -224,12 +209,12 @@ class ControlUnit:
                             "Невозможно провести операцию ST При прямой адрессации: "
                             + str(current_instruction)
                         )
-                    if (
-                        current_instruction.operand == 0
-                        and current_instruction.addressing == Addressing.MEM
-                    ):
-                        self.new_symbol_on_output = True
-                    self.datapath.data_memory.latch_write(self.datapath.acc.get_value())
+                    # if (
+                    #    current_instruction.operand == 0
+                    #    and current_instruction.addressing == Addressing.MEM
+                    # ):
+                    #    self.new_symbol_on_output = True
+                    self.datapath.write_data()
                     self.tick()
                 case Opcode.PUSH:
                     self.datapath.data_address_register.latch(

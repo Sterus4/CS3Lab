@@ -4,6 +4,33 @@ from src.exceptions import AluException
 from src.isa import Instruction
 
 
+class IODevice:
+    address: int
+    data: list[int]
+    current_index_read: int
+
+    def __init__(self, address: int):
+        self.address = address
+        self.data = list()
+        self.current_index_read = 0
+
+    def get_address(self):
+        return self.address
+
+    def set_data(self, data: list[int]):
+        self.data = data
+
+    def get_data(self):
+        self.current_index_read += 1
+        return self.data[self.current_index_read - 1]
+
+    def get_all(self):
+        return self.data
+
+    def write_data(self, value: int):
+        self.data.append(value)
+
+
 class Register:
     def __init__(self, init_value):
         self.value = init_value
@@ -121,7 +148,28 @@ class Datapath:
     sp_register: Register
     data_address_register: Register
 
+    standart_out_io: IODevice
+    standart_input_io: IODevice
+
+    source_input: list[int]
+
     alu: Alu
+
+    def write_data(self):
+        if self.data_address_register.get_value() == self.standart_out_io.get_address():
+            self.standart_out_io.write_data(self.acc.get_value())
+        else:
+            self.data_memory.latch_write(self.acc.get_value())
+
+    def read_operand(self):
+        if (
+            self.data_address_register.get_value()
+            == self.standart_input_io.get_address()
+        ):
+            self.data_register.latch(self.standart_input_io.get_data())
+        else:
+            self.data_memory.latch_read()
+            self.data_register.latch(self.data_memory.get_data_out())
 
     def __init__(
         self,
@@ -129,6 +177,7 @@ class Datapath:
         ip_value: int,
         data_size: int,
         instructions: list[Instruction],
+        source_input: list[int],
     ):
         self.acc = Register(acc_value)
         self.ip_register = Register(ip_value)
@@ -136,11 +185,15 @@ class Datapath:
         self.data_register = Register(0)
         self.data_address_register = Register(0)
         self.sp_register = Register(data_size)
+        self.source_input = source_input
 
         self.data_memory = DataMemory(self.data_address_register, data_size, 0)
         self.instruction_memory = InstructionMemory(
             instructions, instructions[0].address
         )
+        self.standart_out_io = IODevice(0)
+        self.standart_input_io = IODevice(1)
+        self.standart_input_io.set_data(source_input)
 
         self.flags = {Flag.NF: False, Flag.ZF: False}
 

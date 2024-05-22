@@ -8,12 +8,12 @@ data_memory_size = 8000
 
 def main(target_program, input_src):
     instructions = read_code(target_program)
-    datapath = Datapath(0, instructions[0].address, 1000, instructions)
     with open(input_src) as input_file:
         input_char_list = [ord(i) for i in input_file.read()]
         input_char_list.append(0)
 
-    control_unit = ControlUnit(input_char_list, datapath, 10_000)
+    datapath = Datapath(0, instructions[0].address, 1000, instructions, input_char_list)
+    control_unit = ControlUnit(datapath, 10_000)
     control_unit.simulate()
 
 
