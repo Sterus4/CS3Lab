@@ -1,7 +1,7 @@
 from enum import Enum
 
 from src.exceptions import AluException
-from src.isa import Instruction
+from src.isa import Instruction, Opcode
 
 
 class IODevice:
@@ -171,6 +171,19 @@ class Datapath:
             self.data_memory.latch_read()
             self.data_register.latch(self.data_memory.get_data_out())
 
+    def init_memory(self, instructions: list[Instruction]):
+        ind = 0
+        for i in range(len(instructions)):
+            if instructions[i].opcode == Opcode.WORD:
+                ind = i
+                break
+        self.instruction_memory = InstructionMemory(
+            instructions[:ind], instructions[0].address
+        )
+        for data in instructions[ind:]:
+            self.data_memory.memory[data.address] = data.operand
+
+
     def __init__(
         self,
         acc_value: int,
@@ -188,9 +201,7 @@ class Datapath:
         self.source_input = source_input
 
         self.data_memory = DataMemory(self.data_address_register, data_size, 0)
-        self.instruction_memory = InstructionMemory(
-            instructions, instructions[0].address
-        )
+        self.init_memory(instructions)
         self.standart_out_io = IODevice(0)
         self.standart_input_io = IODevice(1)
         self.standart_input_io.set_data(source_input)

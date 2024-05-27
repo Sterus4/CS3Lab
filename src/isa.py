@@ -21,6 +21,9 @@ class Opcode(str, Enum):
     INC = "inc"
     NEG = "neg"
 
+    # Память данных
+    WORD = "word"
+
     # Память
     LD = "ld"
     ST = "st"
