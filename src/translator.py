@@ -137,11 +137,11 @@ class Translator:
 
     def create_comparison(self, left: str, right: str):
         self.create_math(right)
-        self.create_operation(Opcode.ST, -1, Addressing.SP)
+        self.create_operation(Opcode.PUSH)
         self.create_math(left)
-        self.create_operation(
-            Opcode.SUB, -1, Addressing.SP
-        )
+        self.create_operation(Opcode.SUB, 0, Addressing.SP)
+        self.create_operation(Opcode.ST, 0, Addressing.SP)
+        self.create_operation(Opcode.POP)
 
     def find_end_of_block(self, code: list[str], start_position: int) -> int:
         i = start_position + 1
@@ -166,14 +166,12 @@ class Translator:
             self.add_print_char(i)
 
     def add_print_pointer(self, address: int):  # Address - адрес pointer'a
-        #self.create_operation(Opcode.ST, self.current_free_data_address, Addressing.MEM)
+        # self.create_operation(Opcode.ST, self.current_free_data_address, Addressing.MEM)
         self.create_operation(Opcode.LD, address, Addressing.MEM)
         self.create_operation(Opcode.PUSH)
 
         index_to_jump = self.result[-1].address + 1
-        self.create_operation(
-            Opcode.LD, address, Addressing.IND_MEM
-        )
+        self.create_operation(Opcode.LD, address, Addressing.IND_MEM)
 
         self.create_operation(Opcode.JZ, self.current_instruction_address + 6)
         self.create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
@@ -188,7 +186,9 @@ class Translator:
         self.create_operation(Opcode.PUSH)
         self.create_operation(Opcode.LD, self.current_free_data_address, Addressing.MEM)
         self.create_operation(Opcode.PUSH)
-        self.create_operation(Opcode.LD, self.current_free_data_address + 1, Addressing.MEM)
+        self.create_operation(
+            Opcode.LD, self.current_free_data_address + 1, Addressing.MEM
+        )
         self.create_operation(Opcode.PUSH)
         self.create_operation(Opcode.LD, 2, Addressing.SP)
         self.create_operation(
@@ -222,7 +222,9 @@ class Translator:
         self.create_operation(Opcode.ST, IO_OUT_MEM, Addressing.MEM)
         self.create_operation(Opcode.JMP, index_to_jump)
         self.create_operation(Opcode.POP)
-        self.create_operation(Opcode.ST, self.current_free_data_address + 1, Addressing.MEM)
+        self.create_operation(
+            Opcode.ST, self.current_free_data_address + 1, Addressing.MEM
+        )
         self.create_operation(Opcode.POP)
         self.create_operation(Opcode.ST, self.current_free_data_address, Addressing.MEM)
         self.create_operation(Opcode.POP)
@@ -283,16 +285,26 @@ class Translator:
                     )
                     if var_type == "int":
                         if operand is None:
-                            self.create_operation_data(self.current_free_data_address, 0)
+                            self.create_operation_data(
+                                self.current_free_data_address, 0
+                            )
                             self.current_free_data_address += 1
-                        elif re.fullmatch(r'[+-]?[0-9]+', operand):
+                        elif re.fullmatch(r"[+-]?[0-9]+", operand):
                             operand = int(operand)
-                            self.create_operation_data(self.current_free_data_address, operand)
+                            self.create_operation_data(
+                                self.current_free_data_address, operand
+                            )
                             self.current_free_data_address += 1
                         else:
-                            self.create_operation_data(self.current_free_data_address, 0)
+                            self.create_operation_data(
+                                self.current_free_data_address, 0
+                            )
                             self.create_math(operand)
-                            self.create_operation(Opcode.ST, self.current_free_data_address, Addressing.MEM)
+                            self.create_operation(
+                                Opcode.ST,
+                                self.current_free_data_address,
+                                Addressing.MEM,
+                            )
                             self.current_free_data_address += 1
                     elif var_type == "char":
                         if operand is None:
@@ -311,7 +323,9 @@ class Translator:
                                     + current_token
                                 )
                             local_operand = operand
-                        self.create_operation_data(self.current_free_data_address, local_operand)
+                        self.create_operation_data(
+                            self.current_free_data_address, local_operand
+                        )
                         self.current_free_data_address += 1
                 case TokenType.CREATE_NEW_POINTER:
                     var_type = current_token.split("[")[0]
@@ -352,19 +366,24 @@ class Translator:
                     if var_capacity == -1:
                         if self.recognise_token(operand) != TokenType.STRING:
                             raise InvalidToken("Неизвестный токен: " + current_token)
-                        #self.create_operation(
+                        # self.create_operation(
                         #    Opcode.LD,
                         #    self.current_free_data_address + 1,
                         #    Addressing.DIR,
-                        #)
-                        #self.create_operation(
+                        # )
+                        # self.create_operation(
                         #    Opcode.ST, self.current_free_data_address, Addressing.MEM
-                        #)
-                        self.create_operation_data(self.current_free_data_address, self.current_free_data_address + 1)
+                        # )
+                        self.create_operation_data(
+                            self.current_free_data_address,
+                            self.current_free_data_address + 1,
+                        )
                         self.current_free_data_address += 1
                         operand = operand[1:-1]
                         for char in operand:
-                            self.create_operation_data(self.current_free_data_address, ord(char))
+                            self.create_operation_data(
+                                self.current_free_data_address, ord(char)
+                            )
                             self.current_free_data_address += 1
                         self.create_operation_data(self.current_free_data_address, 0)
                         self.current_free_data_address += 1
@@ -374,16 +393,19 @@ class Translator:
                             and self.recognise_token(operand) != TokenType.STRING
                         ):
                             raise InvalidToken("Неизвестный токен: " + current_token)
-                        #self.create_operation(
+                        # self.create_operation(
                         #    Opcode.LD,
                         #    self.current_free_data_address + 1,
                         #    Addressing.DIR,
-                        #)
-                        #self.create_operation(
+                        # )
+                        # self.create_operation(
                         #    Opcode.ST, self.current_free_data_address, Addressing.MEM
-                        #)
-                        #self.current_free_data_address += 1
-                        self.create_operation_data(self.current_free_data_address, self.current_free_data_address + 1)
+                        # )
+                        # self.current_free_data_address += 1
+                        self.create_operation_data(
+                            self.current_free_data_address,
+                            self.current_free_data_address + 1,
+                        )
                         self.current_free_data_address += 1
                         if operand is not None:
                             local_free_data_address = self.current_free_data_address
@@ -393,19 +415,21 @@ class Translator:
                                 if count >= min(var_capacity - 1, len(operand)):
                                     break
                                 count += 1
-                                self.create_operation_data(local_free_data_address, ord(char))
+                                self.create_operation_data(
+                                    local_free_data_address, ord(char)
+                                )
                                 local_free_data_address += 1
-                                #self.create_operation(
+                                # self.create_operation(
                                 #    Opcode.LD, ord(char), Addressing.DIR
-                                #)
-                                #self.create_operation(
+                                # )
+                                # self.create_operation(
                                 #    Opcode.ST, local_free_data_address, Addressing.MEM
-                                #)
-                                #local_free_data_address += 1
-                            #self.create_operation(Opcode.LD, 0, Addressing.DIR)
-                            #self.create_operation(
+                                # )
+                                # local_free_data_address += 1
+                            # self.create_operation(Opcode.LD, 0, Addressing.DIR)
+                            # self.create_operation(
                             #    Opcode.ST, local_free_data_address, Addressing.MEM
-                            #)
+                            # )
                             self.create_operation_data(local_free_data_address, 0)
 
                         self.current_free_data_address += var_capacity
@@ -536,7 +560,9 @@ class Translator:
                                     )
                                     self.add_print_number()
                                 case DataType.POINTER:
-                                    self.add_print_pointer(self.variables[code[i + 2]][1])
+                                    self.add_print_pointer(
+                                        self.variables[code[i + 2]][1]
+                                    )
                         case _:
                             self.create_math(code[i + 2])
                             self.add_print_number()
@@ -581,9 +607,7 @@ class Translator:
         self.current_instruction_address += 1
 
     def create_operation_data(self, address: int, operand=None, addressing=None):
-        self.result_data.append(
-            Instruction(address, Opcode.WORD, operand, addressing)
-        )
+        self.result_data.append(Instruction(address, Opcode.WORD, operand, addressing))
 
     def translate(self, src: str) -> list[Instruction]:
         self.key_words = ["while", "if", "read", "print"]
@@ -628,7 +652,7 @@ class Translator:
                 code_modified.append(temp)
         code = code_modified.copy()
         # Код разбит на лексемы
-        print(code)
+        # print(code)
 
         self.create_code(code)
         self.create_operation(Opcode.HLT)

@@ -796,6 +796,6 @@ DEBUG    root:control_unit.py:43  Tick: 246, IP: 241, SP: 999, DR: 2, AR: 11. In
 ```
 |           Full name             | alg            | loc | bytes | instr | exec_instr | tick |                                            variant                                             |
 | Нигаматуллин Степан Русланович  | hello_world    | 1   | -     | 27    | 27         | 79   |     alg -> asm | acc | harv | hw | instr | struct | stream | mem | cstr | prob2 | cache        |
-| Нигаматуллин Степан Русланович  | greet_user     | 7   | -     | 73    | 133        | 408  |     alg -> asm | acc | harv | hw | instr | struct | stream | mem | cstr | prob2 | cache        |
-| Нигаматуллин Степан Русланович  | prob2          | 17  | -     | 200   | 1388       | 4580 |     alg -> asm | acc | harv | hw | instr | struct | stream | mem | cstr | prob2 | cache        |
+| Нигаматуллин Степан Русланович  | greet_user     | 7   | -     | 73    | 131        | 403  |     alg -> asm | acc | harv | hw | instr | struct | stream | mem | cstr | prob2 | cache        |
+| Нигаматуллин Степан Русланович  | prob2          | 17  | -     | 200   | 1529       | 5074 |     alg -> asm | acc | harv | hw | instr | struct | stream | mem | cstr | prob2 | cache        |
 ```

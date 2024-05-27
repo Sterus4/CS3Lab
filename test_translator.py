@@ -11,11 +11,11 @@ class TestTranslator:
         input = """
                      char[200] name;
             print(   "Enter your name:"    );
-            char new_line =    10;
-              print(new_line)    ;
+            char     new_line =    10;
+              print(  new_line )    ;
             read(     name);
             print("Hello, "  );
-            print(name);
+            print ( name );
             """
         self.translator.translate(input)
 

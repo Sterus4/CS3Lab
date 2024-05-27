@@ -172,7 +172,7 @@ class Datapath:
             self.data_register.latch(self.data_memory.get_data_out())
 
     def init_memory(self, instructions: list[Instruction]):
-        ind = 0
+        ind = len(instructions)
         for i in range(len(instructions)):
             if instructions[i].opcode == Opcode.WORD:
                 ind = i
@@ -182,7 +182,6 @@ class Datapath:
         )
         for data in instructions[ind:]:
             self.data_memory.memory[data.address] = data.operand
-
 
     def __init__(
         self,
