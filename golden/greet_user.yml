@@ -11,7 +11,33 @@ in_input: |-
   Alice
 
 out_output: |
-  Файл транслирован
+  Файл транслирован, полученное AST:
+  Pointer Definition : {
+  	type : char;
+  	name : name;
+  	value : "None";
+  	capacity : 200;
+  }
+  IO call : {
+  	print : "Enter your name:";
+  }
+  Variable definition : {
+  	type : char;
+  	name : new_line;
+  	value : 10;
+  }
+  IO call : {
+  	print : new_line;
+  }
+  IO call : {
+  	read : name;
+  }
+  IO call : {
+  	print : "Hello, ";
+  }
+  IO call : {
+  	print : name;
+  }
   ============================================================
   Исполнено инструкций: 131, Тиков выполнено: 403
   Вывод программы: 

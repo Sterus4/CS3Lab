@@ -45,6 +45,37 @@ def is_char(src: str) -> bool:
     return len(src) == 3 and src[0] == "'" and src[-1] == "'"
 
 
+class AstExpression:
+    name: str
+    body: str
+
+    def __init__(self, name: str, body: str):
+        self.name = name
+        self.body = body
+
+    def __str__(self):
+        return self.name + " : " + self.body
+
+
+class AstNode:
+    name: str
+    body_expression: list
+
+    def __init__(self, name: str, body_exp: list):
+        self.name = name
+        self.body_expression = body_exp
+
+    def __str__(self):
+        result = self.name + " : {\n"
+        for i in self.body_expression:
+            if isinstance(i, AstExpression):
+                result += "\t" + str(i) + ";\n"
+            else:
+                for j in str(i).split("\n"):
+                    result += "\t" + str(j) + "\n"
+        return result + "}"
+
+
 class Translator:
     def __init__(self):
         self.key_words = ["while", "if", "read", "print"]
@@ -134,14 +165,16 @@ class Translator:
                 self.create_operation(Opcode.ST, 0, Addressing.SP)
         if len(expression) != 1:
             self.create_operation(Opcode.POP)
+        return expression
 
     def create_comparison(self, left: str, right: str):
-        self.create_math(right)
+        right_math = self.create_math(right)
         self.create_operation(Opcode.PUSH)
-        self.create_math(left)
+        left_math = self.create_math(left)
         self.create_operation(Opcode.SUB, 0, Addressing.SP)
         self.create_operation(Opcode.ST, 0, Addressing.SP)
         self.create_operation(Opcode.POP)
+        return left_math, right_math
 
     def find_end_of_block(self, code: list[str], start_position: int) -> int:
         i = start_position + 1
@@ -263,6 +296,7 @@ class Translator:
         self.create_operation(current_command)
 
     def create_code(self, code: list[str]):
+        ast = list()
         i = 0
         while i < len(code):
             current_token = code[i]
@@ -299,7 +333,7 @@ class Translator:
                             self.create_operation_data(
                                 self.current_free_data_address, 0
                             )
-                            self.create_math(operand)
+                            operand = self.create_math(operand)
                             self.create_operation(
                                 Opcode.ST,
                                 self.current_free_data_address,
@@ -327,6 +361,16 @@ class Translator:
                             self.current_free_data_address, local_operand
                         )
                         self.current_free_data_address += 1
+                    ast.append(
+                        AstNode(
+                            "Variable definition",
+                            [
+                                AstExpression(name="type", body=var_type),
+                                AstExpression(name="name", body=var_name),
+                                AstExpression("value", str(operand)),
+                            ],
+                        )
+                    )
                 case TokenType.CREATE_NEW_POINTER:
                     var_type = current_token.split("[")[0]
                     if var_type != "char":
@@ -433,6 +477,17 @@ class Translator:
                             self.create_operation_data(local_free_data_address, 0)
 
                         self.current_free_data_address += var_capacity
+                    ast.append(
+                        AstNode(
+                            "Pointer Definition",
+                            [
+                                AstExpression(name="type", body=var_type),
+                                AstExpression(name="name", body=var_name),
+                                AstExpression("value", '"' + str(operand) + '"'),
+                                AstExpression("capacity", str(var_capacity)),
+                            ],
+                        )
+                    )
                 case TokenType.UPDATE_VAR:
                     var_name, operand = (
                         current_token.split("=")[0].strip(),
@@ -462,9 +517,18 @@ class Translator:
                                 + current_token
                             )
                     else:
-                        self.create_math(operand)
+                        operand = self.create_math(operand)
                     self.create_operation(
                         Opcode.ST, self.variables[var_name][1], Addressing.MEM
+                    )
+                    ast.append(
+                        AstNode(
+                            "Variable update",
+                            [
+                                AstExpression(name="name", body=var_name),
+                                AstExpression("value", str(operand)),
+                            ],
+                        )
                     )
                 case TokenType.IF:
                     if (
@@ -485,14 +549,30 @@ class Translator:
                     left, comparison_sign, right = re.split(
                         r"(!=|==|>=|<=|>|<)", code[i + 2]
                     )
-                    self.create_comparison(left, right)
+                    left, right = self.create_comparison(left, right)
                     comparison_index = self.result[-1].address + 1
                     self.create_reverse_sign(comparison_sign)
-                    self.create_code(code[start_of_block + 1 : end_of_block])
+                    if_ast = self.create_code(code[start_of_block + 1 : end_of_block])
                     self.result[
                         comparison_index - self.result[0].address
                     ].operand = self.current_instruction_address
                     i = end_of_block
+                    ast.append(
+                        AstNode(
+                            "if statement",
+                            [
+                                AstNode(
+                                    "condition",
+                                    [
+                                        AstExpression("left", str(left)),
+                                        AstExpression("right", str(right)),
+                                        AstExpression("sign", comparison_sign),
+                                    ],
+                                ),
+                                AstNode("body", if_ast),
+                            ],
+                        )
+                    )
                 case TokenType.WHILE:
                     if (
                         self.recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
@@ -514,16 +594,36 @@ class Translator:
                         r"(==|>=|<=|>|<)", code[i + 2]
                     )
                     while_start = self.current_instruction_address
-                    self.create_comparison(left, right)
+                    left, right = self.create_comparison(left, right)
                     comparison_index = self.result[-1].address + 1
                     self.create_reverse_sign(comparison_sign)
-                    self.create_code(code[start_of_block + 1 : end_of_block])
+                    while_ast = self.create_code(
+                        code[start_of_block + 1 : end_of_block]
+                    )
                     self.result[comparison_index - self.result[0].address].operand = (
                         self.current_instruction_address + 1
                     )
                     self.create_operation(Opcode.JMP, while_start)
                     i = end_of_block
+                    ast.append(
+                        AstNode(
+                            "while statement",
+                            [
+                                AstNode(
+                                    "condition",
+                                    [
+                                        AstExpression("left", str(left)),
+                                        AstExpression("right", str(right)),
+                                        AstExpression("sign", comparison_sign),
+                                    ],
+                                ),
+                                AstNode("body", while_ast),
+                            ],
+                        )
+                    )
+
                 case TokenType.PRINT:
+                    para = code[i + 2]
                     if (
                         self.recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
                         or self.recognise_token(code[i + 3])
@@ -564,10 +664,10 @@ class Translator:
                                         self.variables[code[i + 2]][1]
                                     )
                         case _:
-                            self.create_math(code[i + 2])
+                            para = self.create_math(code[i + 2])
                             self.add_print_number()
+                    ast.append(AstNode("IO call", [AstExpression("print", para)]))
                     i += 3
-
                 case TokenType.READ:
                     if (
                         self.recognise_token(code[i + 1]) != TokenType.QUOTE_ROUND_OPEN
@@ -594,11 +694,12 @@ class Translator:
                                 "Считать можно либо в символ, либо в указатель: "
                                 + current_token
                             )
+                    ast.append(AstNode("IO call", [AstExpression("read", code[i + 2])]))
                     i += 3
-
                 case _:
                     raise TranslateException("Неизвестный токен: " + current_token)
             i += 1
+        return ast
 
     def create_operation(self, opcode, operand=None, addressing=None):
         self.result.append(
@@ -609,7 +710,7 @@ class Translator:
     def create_operation_data(self, address: int, operand=None, addressing=None):
         self.result_data.append(Instruction(address, Opcode.WORD, operand, addressing))
 
-    def translate(self, src: str) -> list[Instruction]:
+    def translate(self, src: str) -> tuple[list[Instruction], list[AstNode]]:
         self.key_words = ["while", "if", "read", "print"]
         self.variables: dict[str, tuple[DataType, int]] = dict()
         self.current_free_data_address = 10
@@ -654,10 +755,10 @@ class Translator:
         # Код разбит на лексемы
         # print(code)
 
-        self.create_code(code)
+        result_ast = self.create_code(code)
         self.create_operation(Opcode.HLT)
         self.result.extend(self.result_data)
-        return self.result
+        return self.result, result_ast
 
 
 def main(source: str, target: str):
@@ -665,9 +766,11 @@ def main(source: str, target: str):
         source = f.read()
     source = re.sub(r"#.*\n", "", source)
     translator = Translator()
-    code = translator.translate(source)
+    code, string_ast = translator.translate(source)
     write_code(target, code)
-    print("Файл транслирован")
+    print("Файл транслирован, полученное AST:")
+    for i in string_ast:
+        print(i)
 
 
 if __name__ == "__main__":

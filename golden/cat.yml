@@ -11,7 +11,30 @@ in_input: |-
 
 
 out_output: |
-  Файл транслирован
+  Файл транслирован, полученное AST:
+  Variable definition : {
+  	type : char;
+  	name : c;
+  	value : None;
+  }
+  IO call : {
+  	read : c;
+  }
+  while statement : {
+  	condition : {
+  		left : ['c'];
+  		right : ['0'];
+  		sign : >;
+  	}
+  	body : {
+  		IO call : {
+  			print : c;
+  		}
+  		IO call : {
+  			read : c;
+  		}
+  	}
+  }
   ============================================================
   Исполнено инструкций: 657, Тиков выполнено: 2083
   Вывод программы: 

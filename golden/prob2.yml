@@ -19,7 +19,67 @@ in_source: |-
 in_input: |
 
 out_output: |
-  Файл транслирован
+  Файл транслирован, полученное AST:
+  Variable definition : {
+  	type : int;
+  	name : a;
+  	value : 1;
+  }
+  Variable definition : {
+  	type : int;
+  	name : b;
+  	value : 1;
+  }
+  Variable definition : {
+  	type : int;
+  	name : sum;
+  	value : 0;
+  }
+  Variable definition : {
+  	type : int;
+  	name : temp;
+  	value : None;
+  }
+  while statement : {
+  	condition : {
+  		left : ['b'];
+  		right : ['4000000'];
+  		sign : <;
+  	}
+  	body : {
+  		if statement : {
+  			condition : {
+  				left : ['b', '2', '%'];
+  				right : ['0'];
+  				sign : ==;
+  			}
+  			body : {
+  				Variable update : {
+  					name : sum;
+  					value : ['sum', 'b', '+'];
+  				}
+  			}
+  		}
+  		Variable update : {
+  			name : temp;
+  			value : ['b'];
+  		}
+  		Variable update : {
+  			name : b;
+  			value : ['a', 'b', '+'];
+  		}
+  		Variable update : {
+  			name : a;
+  			value : ['temp'];
+  		}
+  	}
+  }
+  IO call : {
+  	print : "Сумма всех четных чисел Фибоначчи, которые меньше 4.000.000 = ";
+  }
+  IO call : {
+  	print : sum;
+  }
   ============================================================
   Исполнено инструкций: 1529, Тиков выполнено: 5074
   Вывод программы: 
