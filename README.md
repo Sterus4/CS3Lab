@@ -268,9 +268,8 @@
 * Удаление комментариев
 * Разделение исходного кода на массив лексем (токенов)
 * Определение типов токенов
-* Для каждого токена:
-  * Разделение его на составные части, если они имеются
-  * Создание машинного кода токена
+* Создание абстрактного синтаксического дерева
+* Трансляция
 
 ## Модель процессора
 
@@ -307,6 +306,7 @@ Control unit здесь реализован как hardwire, в нем нахо
 
 Для алгоритмов реализованы golden-тесты:
 * [Hello world](golden/hello_world.yml)
+* [Hello world - через создание указателя](golden/hello_world_pointer.yml)
 * [Cat](golden/cat.yml)
 * [Greet User](golden/greet_user.yml)
 * [Prob2](golden/prob2.yml)
@@ -333,6 +333,72 @@ while (b < 4000000){ # Цикл до максимального значения
 print("Сумма всех четных чисел Фибоначчи, которые меньше 4.000.000 = ");
 print(sum); # Выводим результаты
 ```
+Построенное AST:
+```
+Variable definition : {
+	type : int;
+	name : a;
+	value : 1;
+}
+Variable definition : {
+	type : int;
+	name : b;
+	value : 1;
+}
+Variable definition : {
+	type : int;
+	name : sum;
+	value : 0;
+}
+Variable definition : {
+	type : int;
+	name : temp;
+	value : None;
+}
+while statement : {
+	condition : {
+		left : ['b'];
+		right : ['4000000'];
+		sign : <;
+	}
+	body : {
+		if statement : {
+			condition : {
+				left : ['b', '2', '%'];
+				right : ['0'];
+				sign : ==;
+			}
+			body : {
+				Variable update : {
+					name : sum;
+					value : ['sum', 'b', '+'];
+				}
+			}
+		}
+		Variable update : {
+			name : temp;
+			value : ['b'];
+		}
+		Variable update : {
+			name : b;
+			value : ['a', 'b', '+'];
+		}
+		Variable update : {
+			name : a;
+			value : ['temp'];
+		}
+	}
+}
+IO call : {
+	print : "Сумма всех четных чисел Фибоначчи, которые меньше 4.000.000 = ";
+}
+IO call : {
+	print : sum;
+}
+```
+Ввиду способа подсчета математических выражений, способ их записи - просто массив операторов, литералов и идентификаторов
+
+
 Транслированный машинный код:
 
 ``` json
