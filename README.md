@@ -335,65 +335,67 @@ print(sum); # Выводим результаты
 ```
 Построенное AST:
 ```
-Variable definition : {
-	type : int;
-	name : a;
-	value : 1;
-}
-Variable definition : {
-	type : int;
-	name : b;
-	value : 1;
-}
-Variable definition : {
-	type : int;
-	name : sum;
-	value : 0;
-}
-Variable definition : {
-	type : int;
-	name : temp;
-	value : None;
-}
-while statement : {
-	condition : {
-		left : ['b'];
-		right : ['4000000'];
-		sign : <;
-	}
-	body : {
-		if statement : {
-			condition : {
-				left : ['b', '2', '%'];
-				right : ['0'];
-				sign : ==;
-			}
-			body : {
-				Variable update : {
-					name : sum;
-					value : ['sum', 'b', '+'];
-				}
-			}
-		}
-		Variable update : {
-			name : temp;
-			value : ['b'];
-		}
-		Variable update : {
-			name : b;
-			value : ['a', 'b', '+'];
-		}
-		Variable update : {
-			name : a;
-			value : ['temp'];
-		}
-	}
-}
-IO call : {
-	print : "Сумма всех четных чисел Фибоначчи, которые меньше 4.000.000 = ";
-}
-IO call : {
-	print : sum;
+Program : {
+  variable definition : {
+      type : int;
+      name : a;
+      value : 1;
+  }
+  variable definition : {
+      type : int;
+      name : b;
+      value : 1;
+  }
+  variable definition : {
+      type : int;
+      name : sum;
+      value : 0;
+  }
+  variable definition : {
+      type : int;
+      name : temp;
+      value : None;
+  }
+  while statement : {
+      condition : {
+          left : ['b'];
+          right : ['4000000'];
+          sign : <;
+      }
+      body : {
+          if statement : {
+              condition : {
+                  left : ['b', '2', '%'];
+                  right : ['0'];
+                  sign : ==;
+              }
+              body : {
+                  variable update : {
+                      name : sum;
+                      value : ['sum', 'b', '+'];
+                  }
+              }
+          }
+          variable update : {
+              name : temp;
+              value : ['b'];
+          }
+          variable update : {
+              name : b;
+              value : ['a', 'b', '+'];
+          }
+          variable update : {
+              name : a;
+              value : ['temp'];
+          }
+      }
+  }
+  IO call : {
+      print : "Сумма всех четных чисел Фибоначчи, которые меньше 4.000.000 = ";
+  }
+  IO call : {
+      print : sum;
+  }
 }
 ```
 Ввиду способа подсчета математических выражений, способ их записи - просто массив операторов, литералов и идентификаторов
@@ -619,882 +621,394 @@ IO call : {
 
 Лог работы процессора:
 ```
-DEBUG    root:control_unit.py:38  Tick: 0, IP: 201, SP: 1000, DR: 0, AR: 0. Instruction: < ld -> 4000000 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 1, IP: 201, SP: 1000, DR: 4000000, AR: 0. Instruction: < ld -> 4000000 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 2, IP: 201, SP: 1000, DR: 4000000, AR: 0. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 3, IP: 202, SP: 1000, DR: 4000000, AR: 0. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 4, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 5, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 6, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 7, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 8, IP: 203, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 9, IP: 203, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 10, IP: 204, SP: 999, DR: 1, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 11, IP: 204, SP: 999, DR: 1, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 12, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 13, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 14, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 15, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 16, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 17, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 18, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 19, IP: 206, SP: 1000, DR: -3999999, AR: 999. Instruction: < pop -> None | None >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 20, IP: 206, SP: 1000, DR: -3999999, AR: 999. Instruction: < pop -> None | None >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 21, IP: 207, SP: 1000, DR: -3999999, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 22, IP: 208, SP: 1000, DR: -3999999, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 23, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999999
-DEBUG    root:control_unit.py:38  Tick: 24, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 25, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 26, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 27, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 28, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 29, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 30, IP: 210, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 31, IP: 210, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 32, IP: 211, SP: 999, DR: 1, AR: 11. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 33, IP: 211, SP: 998, DR: 1, AR: 998. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 34, IP: 211, SP: 998, DR: 1, AR: 998. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 35, IP: 212, SP: 998, DR: 1, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 36, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 37, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 38, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 39, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 40, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 41, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 42, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 43, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 44, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 45, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 46, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 47, IP: 215, SP: 998, DR: 1, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 48, IP: 215, SP: 998, DR: 1, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 49, IP: 216, SP: 998, DR: 1, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 50, IP: 216, SP: 998, DR: 1, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 51, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 52, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 53, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 54, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 55, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 56, IP: 218, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 57, IP: 218, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 58, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 59, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 60, IP: 219, SP: 999, DR: 1, AR: 998. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 61, IP: 219, SP: 999, DR: 1, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 62, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 63, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 64, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 65, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 66, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 67, IP: 221, SP: 999, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 68, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 69, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 70, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 71, IP: 222, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 72, IP: 232, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 73, IP: 233, SP: 1000, DR: 1, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 74, IP: 233, SP: 1000, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 75, IP: 233, SP: 1000, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 76, IP: 233, SP: 1000, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 77, IP: 234, SP: 1000, DR: 1, AR: 11. Instruction: < st -> 13 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 78, IP: 234, SP: 1000, DR: 1, AR: 13. Instruction: < st -> 13 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 79, IP: 234, SP: 1000, DR: 1, AR: 13. Instruction: < st -> 13 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 80, IP: 235, SP: 1000, DR: 1, AR: 13. Instruction: < ld -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 81, IP: 235, SP: 1000, DR: 1, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 82, IP: 235, SP: 1000, DR: 1, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 83, IP: 235, SP: 1000, DR: 1, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 84, IP: 236, SP: 1000, DR: 1, AR: 10. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 85, IP: 236, SP: 999, DR: 1, AR: 999. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 86, IP: 236, SP: 999, DR: 1, AR: 999. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 87, IP: 237, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 88, IP: 237, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 89, IP: 237, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 90, IP: 237, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 91, IP: 238, SP: 999, DR: 1, AR: 11. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 92, IP: 238, SP: 998, DR: 1, AR: 998. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 93, IP: 238, SP: 998, DR: 1, AR: 998. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 94, IP: 239, SP: 998, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 95, IP: 239, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 96, IP: 239, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 97, IP: 239, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 98, IP: 240, SP: 999, DR: 1, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 99, IP: 240, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 100, IP: 240, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 101, IP: 240, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 102, IP: 241, SP: 999, DR: 1, AR: 999. Instruction: < add -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 103, IP: 241, SP: 999, DR: 1, AR: 998. Instruction: < add -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 104, IP: 241, SP: 999, DR: 1, AR: 998. Instruction: < add -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 105, IP: 241, SP: 999, DR: 1, AR: 998. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 106, IP: 242, SP: 999, DR: 1, AR: 998. Instruction: < st -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 107, IP: 242, SP: 999, DR: 1, AR: 999. Instruction: < st -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 108, IP: 242, SP: 999, DR: 1, AR: 999. Instruction: < st -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 109, IP: 243, SP: 999, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 110, IP: 243, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 111, IP: 243, SP: 1000, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 112, IP: 243, SP: 1000, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 113, IP: 244, SP: 1000, DR: 2, AR: 999. Instruction: < st -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 114, IP: 244, SP: 1000, DR: 2, AR: 11. Instruction: < st -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 115, IP: 244, SP: 1000, DR: 2, AR: 11. Instruction: < st -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 116, IP: 245, SP: 1000, DR: 2, AR: 11. Instruction: < ld -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 117, IP: 245, SP: 1000, DR: 2, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 118, IP: 245, SP: 1000, DR: 1, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 119, IP: 245, SP: 1000, DR: 1, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 120, IP: 246, SP: 1000, DR: 1, AR: 13. Instruction: < st -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 121, IP: 246, SP: 1000, DR: 1, AR: 10. Instruction: < st -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 122, IP: 246, SP: 1000, DR: 1, AR: 10. Instruction: < st -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 123, IP: 247, SP: 1000, DR: 1, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 124, IP: 200, SP: 1000, DR: 1, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 125, IP: 201, SP: 1000, DR: 1, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 126, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 127, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 128, IP: 202, SP: 1000, DR: 4000000, AR: 10. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 129, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 130, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 131, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 132, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 133, IP: 203, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 134, IP: 203, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 135, IP: 204, SP: 999, DR: 2, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 136, IP: 204, SP: 999, DR: 2, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 137, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 138, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 139, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 140, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 141, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 142, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 143, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 144, IP: 206, SP: 1000, DR: -3999998, AR: 999. Instruction: < pop -> None | None >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 145, IP: 206, SP: 1000, DR: -3999998, AR: 999. Instruction: < pop -> None | None >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 146, IP: 207, SP: 1000, DR: -3999998, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 147, IP: 208, SP: 1000, DR: -3999998, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 148, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999998
-DEBUG    root:control_unit.py:38  Tick: 149, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 150, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 151, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 152, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 153, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 154, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 155, IP: 210, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 156, IP: 210, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 157, IP: 211, SP: 999, DR: 2, AR: 11. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 158, IP: 211, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 159, IP: 211, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 160, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 161, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 162, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 163, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 164, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 165, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 166, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 167, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 168, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 169, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 170, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 171, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 172, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 173, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 174, IP: 216, SP: 998, DR: 2, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 175, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 176, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 177, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 178, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 179, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 180, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 181, IP: 218, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 182, IP: 218, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 183, IP: 218, SP: 999, DR: 0, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 184, IP: 218, SP: 999, DR: 0, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 185, IP: 219, SP: 999, DR: 0, AR: 998. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 186, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 187, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 188, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 189, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 190, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 191, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 192, IP: 221, SP: 999, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 193, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 194, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 195, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 196, IP: 222, SP: 1000, DR: 0, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 197, IP: 223, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 198, IP: 223, SP: 1000, DR: 0, AR: 12. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 199, IP: 223, SP: 1000, DR: 0, AR: 12. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 200, IP: 223, SP: 1000, DR: 0, AR: 12. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 201, IP: 224, SP: 1000, DR: 0, AR: 12. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 202, IP: 224, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 203, IP: 224, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 204, IP: 225, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 205, IP: 225, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 206, IP: 225, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 207, IP: 225, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 208, IP: 226, SP: 999, DR: 2, AR: 11. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 209, IP: 226, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 210, IP: 226, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 211, IP: 227, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 212, IP: 227, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 213, IP: 227, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 214, IP: 227, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 215, IP: 228, SP: 999, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 216, IP: 228, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 217, IP: 228, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 218, IP: 228, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 219, IP: 229, SP: 999, DR: 0, AR: 999. Instruction: < add -> -1 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 220, IP: 229, SP: 999, DR: 0, AR: 998. Instruction: < add -> -1 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 221, IP: 229, SP: 999, DR: 2, AR: 998. Instruction: < add -> -1 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 222, IP: 229, SP: 999, DR: 2, AR: 998. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 223, IP: 230, SP: 999, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 224, IP: 230, SP: 999, DR: 2, AR: 999. Instruction: < st -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 225, IP: 230, SP: 999, DR: 2, AR: 999. Instruction: < st -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 226, IP: 231, SP: 999, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 227, IP: 231, SP: 1000, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 228, IP: 231, SP: 1000, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 229, IP: 231, SP: 1000, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 230, IP: 232, SP: 1000, DR: 2, AR: 999. Instruction: < st -> 12 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 231, IP: 232, SP: 1000, DR: 2, AR: 12. Instruction: < st -> 12 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 232, IP: 232, SP: 1000, DR: 2, AR: 12. Instruction: < st -> 12 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 233, IP: 233, SP: 1000, DR: 2, AR: 12. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 234, IP: 233, SP: 1000, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 235, IP: 233, SP: 1000, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 236, IP: 233, SP: 1000, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 237, IP: 234, SP: 1000, DR: 2, AR: 11. Instruction: < st -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 238, IP: 234, SP: 1000, DR: 2, AR: 13. Instruction: < st -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 239, IP: 234, SP: 1000, DR: 2, AR: 13. Instruction: < st -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 240, IP: 235, SP: 1000, DR: 2, AR: 13. Instruction: < ld -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 241, IP: 235, SP: 1000, DR: 2, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 242, IP: 235, SP: 1000, DR: 1, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 243, IP: 235, SP: 1000, DR: 1, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 244, IP: 236, SP: 1000, DR: 1, AR: 10. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 245, IP: 236, SP: 999, DR: 1, AR: 999. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 246, IP: 236, SP: 999, DR: 1, AR: 999. Instruction: < push -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 247, IP: 237, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 248, IP: 237, SP: 999, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 249, IP: 237, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 250, IP: 237, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 251, IP: 238, SP: 999, DR: 2, AR: 11. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 252, IP: 238, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 253, IP: 238, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 254, IP: 239, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 255, IP: 239, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 256, IP: 239, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 257, IP: 239, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 258, IP: 240, SP: 999, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 259, IP: 240, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 260, IP: 240, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 261, IP: 240, SP: 999, DR: 1, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 262, IP: 241, SP: 999, DR: 1, AR: 999. Instruction: < add -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 263, IP: 241, SP: 999, DR: 1, AR: 998. Instruction: < add -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 264, IP: 241, SP: 999, DR: 2, AR: 998. Instruction: < add -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 265, IP: 241, SP: 999, DR: 2, AR: 998. Instruction: < add -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 266, IP: 242, SP: 999, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 267, IP: 242, SP: 999, DR: 2, AR: 999. Instruction: < st -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 268, IP: 242, SP: 999, DR: 2, AR: 999. Instruction: < st -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 269, IP: 243, SP: 999, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 270, IP: 243, SP: 1000, DR: 2, AR: 999. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 271, IP: 243, SP: 1000, DR: 3, AR: 999. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 272, IP: 243, SP: 1000, DR: 3, AR: 999. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 273, IP: 244, SP: 1000, DR: 3, AR: 999. Instruction: < st -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 274, IP: 244, SP: 1000, DR: 3, AR: 11. Instruction: < st -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 275, IP: 244, SP: 1000, DR: 3, AR: 11. Instruction: < st -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 276, IP: 245, SP: 1000, DR: 3, AR: 11. Instruction: < ld -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 277, IP: 245, SP: 1000, DR: 3, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 278, IP: 245, SP: 1000, DR: 2, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 279, IP: 245, SP: 1000, DR: 2, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 280, IP: 246, SP: 1000, DR: 2, AR: 13. Instruction: < st -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 281, IP: 246, SP: 1000, DR: 2, AR: 10. Instruction: < st -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 282, IP: 246, SP: 1000, DR: 2, AR: 10. Instruction: < st -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 283, IP: 247, SP: 1000, DR: 2, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 284, IP: 200, SP: 1000, DR: 2, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 285, IP: 201, SP: 1000, DR: 2, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 286, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 287, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 288, IP: 202, SP: 1000, DR: 4000000, AR: 10. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 289, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 290, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 291, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 292, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 293, IP: 203, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 294, IP: 203, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 295, IP: 204, SP: 999, DR: 3, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 296, IP: 204, SP: 999, DR: 3, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 297, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 298, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 299, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 300, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 301, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 302, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 303, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 304, IP: 206, SP: 1000, DR: -3999997, AR: 999. Instruction: < pop -> None | None >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 305, IP: 206, SP: 1000, DR: -3999997, AR: 999. Instruction: < pop -> None | None >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 306, IP: 207, SP: 1000, DR: -3999997, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 307, IP: 208, SP: 1000, DR: -3999997, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 308, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999997
-DEBUG    root:control_unit.py:38  Tick: 309, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 310, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 311, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 312, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 313, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 314, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 315, IP: 210, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 316, IP: 210, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 317, IP: 211, SP: 999, DR: 3, AR: 11. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 318, IP: 211, SP: 998, DR: 3, AR: 998. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 319, IP: 211, SP: 998, DR: 3, AR: 998. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 320, IP: 212, SP: 998, DR: 3, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 321, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 322, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 323, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 324, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 325, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 326, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 327, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 328, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 329, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 330, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 331, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 332, IP: 215, SP: 998, DR: 3, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 333, IP: 215, SP: 998, DR: 3, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 334, IP: 216, SP: 998, DR: 3, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 335, IP: 216, SP: 998, DR: 3, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 336, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 337, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 338, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 339, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 340, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 341, IP: 218, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 342, IP: 218, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 343, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 344, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 345, IP: 219, SP: 999, DR: 1, AR: 998. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 346, IP: 219, SP: 999, DR: 1, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 347, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 348, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 349, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 350, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 351, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 352, IP: 221, SP: 999, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 353, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 354, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 355, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 356, IP: 222, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 357, IP: 232, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 358, IP: 233, SP: 1000, DR: 1, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 359, IP: 233, SP: 1000, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 360, IP: 233, SP: 1000, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 361, IP: 233, SP: 1000, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 362, IP: 234, SP: 1000, DR: 3, AR: 11. Instruction: < st -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 363, IP: 234, SP: 1000, DR: 3, AR: 13. Instruction: < st -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 364, IP: 234, SP: 1000, DR: 3, AR: 13. Instruction: < st -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 365, IP: 235, SP: 1000, DR: 3, AR: 13. Instruction: < ld -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 366, IP: 235, SP: 1000, DR: 3, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 367, IP: 235, SP: 1000, DR: 2, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 368, IP: 235, SP: 1000, DR: 2, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 369, IP: 236, SP: 1000, DR: 2, AR: 10. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 370, IP: 236, SP: 999, DR: 2, AR: 999. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 371, IP: 236, SP: 999, DR: 2, AR: 999. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 372, IP: 237, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 373, IP: 237, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 374, IP: 237, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 375, IP: 237, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 376, IP: 238, SP: 999, DR: 3, AR: 11. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 377, IP: 238, SP: 998, DR: 3, AR: 998. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 378, IP: 238, SP: 998, DR: 3, AR: 998. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 379, IP: 239, SP: 998, DR: 3, AR: 998. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 380, IP: 239, SP: 999, DR: 3, AR: 998. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 381, IP: 239, SP: 999, DR: 3, AR: 998. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 382, IP: 239, SP: 999, DR: 3, AR: 998. Instruction: < pop -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 383, IP: 240, SP: 999, DR: 3, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 384, IP: 240, SP: 999, DR: 3, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 385, IP: 240, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 386, IP: 240, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 387, IP: 241, SP: 999, DR: 2, AR: 999. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 388, IP: 241, SP: 999, DR: 2, AR: 998. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 389, IP: 241, SP: 999, DR: 3, AR: 998. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 390, IP: 241, SP: 999, DR: 3, AR: 998. Instruction: < add -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 391, IP: 242, SP: 999, DR: 3, AR: 998. Instruction: < st -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 392, IP: 242, SP: 999, DR: 3, AR: 999. Instruction: < st -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 393, IP: 242, SP: 999, DR: 3, AR: 999. Instruction: < st -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 394, IP: 243, SP: 999, DR: 3, AR: 999. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 395, IP: 243, SP: 1000, DR: 3, AR: 999. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 396, IP: 243, SP: 1000, DR: 5, AR: 999. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 397, IP: 243, SP: 1000, DR: 5, AR: 999. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 398, IP: 244, SP: 1000, DR: 5, AR: 999. Instruction: < st -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 399, IP: 244, SP: 1000, DR: 5, AR: 11. Instruction: < st -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 400, IP: 244, SP: 1000, DR: 5, AR: 11. Instruction: < st -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 401, IP: 245, SP: 1000, DR: 5, AR: 11. Instruction: < ld -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 402, IP: 245, SP: 1000, DR: 5, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 403, IP: 245, SP: 1000, DR: 3, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 404, IP: 245, SP: 1000, DR: 3, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 405, IP: 246, SP: 1000, DR: 3, AR: 13. Instruction: < st -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 406, IP: 246, SP: 1000, DR: 3, AR: 10. Instruction: < st -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 407, IP: 246, SP: 1000, DR: 3, AR: 10. Instruction: < st -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 408, IP: 247, SP: 1000, DR: 3, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 409, IP: 200, SP: 1000, DR: 3, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 410, IP: 201, SP: 1000, DR: 3, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 411, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 412, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 413, IP: 202, SP: 1000, DR: 4000000, AR: 10. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 414, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 415, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 416, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 417, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 418, IP: 203, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 419, IP: 203, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 420, IP: 204, SP: 999, DR: 5, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 421, IP: 204, SP: 999, DR: 5, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 422, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 423, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 424, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 425, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 426, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 427, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 428, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 429, IP: 206, SP: 1000, DR: -3999995, AR: 999. Instruction: < pop -> None | None >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 430, IP: 206, SP: 1000, DR: -3999995, AR: 999. Instruction: < pop -> None | None >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 431, IP: 207, SP: 1000, DR: -3999995, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 432, IP: 208, SP: 1000, DR: -3999995, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 433, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999995
-DEBUG    root:control_unit.py:38  Tick: 434, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 435, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 436, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 437, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 438, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 439, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 440, IP: 210, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 441, IP: 210, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 442, IP: 211, SP: 999, DR: 5, AR: 11. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 443, IP: 211, SP: 998, DR: 5, AR: 998. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 444, IP: 211, SP: 998, DR: 5, AR: 998. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 445, IP: 212, SP: 998, DR: 5, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 446, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 447, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 448, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 449, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 450, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 451, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 452, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 453, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 454, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 455, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 456, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 457, IP: 215, SP: 998, DR: 5, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 458, IP: 215, SP: 998, DR: 5, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 459, IP: 216, SP: 998, DR: 5, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 460, IP: 216, SP: 998, DR: 5, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 461, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 462, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 463, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 464, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 465, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 466, IP: 218, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 467, IP: 218, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 468, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 469, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 470, IP: 219, SP: 999, DR: 1, AR: 998. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 471, IP: 219, SP: 999, DR: 1, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 472, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 473, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 474, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 475, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 476, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 477, IP: 221, SP: 999, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 478, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 479, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 480, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 481, IP: 222, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 482, IP: 232, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 483, IP: 233, SP: 1000, DR: 1, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 484, IP: 233, SP: 1000, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 485, IP: 233, SP: 1000, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 486, IP: 233, SP: 1000, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 487, IP: 234, SP: 1000, DR: 5, AR: 11. Instruction: < st -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 488, IP: 234, SP: 1000, DR: 5, AR: 13. Instruction: < st -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 489, IP: 234, SP: 1000, DR: 5, AR: 13. Instruction: < st -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 490, IP: 235, SP: 1000, DR: 5, AR: 13. Instruction: < ld -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 491, IP: 235, SP: 1000, DR: 5, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 492, IP: 235, SP: 1000, DR: 3, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 493, IP: 235, SP: 1000, DR: 3, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 494, IP: 236, SP: 1000, DR: 3, AR: 10. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 495, IP: 236, SP: 999, DR: 3, AR: 999. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 496, IP: 236, SP: 999, DR: 3, AR: 999. Instruction: < push -> None | None >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 497, IP: 237, SP: 999, DR: 3, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 498, IP: 237, SP: 999, DR: 3, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 499, IP: 237, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 500, IP: 237, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 501, IP: 238, SP: 999, DR: 5, AR: 11. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 502, IP: 238, SP: 998, DR: 5, AR: 998. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 503, IP: 238, SP: 998, DR: 5, AR: 998. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 504, IP: 239, SP: 998, DR: 5, AR: 998. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 505, IP: 239, SP: 999, DR: 5, AR: 998. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 506, IP: 239, SP: 999, DR: 5, AR: 998. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 507, IP: 239, SP: 999, DR: 5, AR: 998. Instruction: < pop -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 508, IP: 240, SP: 999, DR: 5, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 509, IP: 240, SP: 999, DR: 5, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 510, IP: 240, SP: 999, DR: 3, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 511, IP: 240, SP: 999, DR: 3, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 512, IP: 241, SP: 999, DR: 3, AR: 999. Instruction: < add -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 513, IP: 241, SP: 999, DR: 3, AR: 998. Instruction: < add -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 514, IP: 241, SP: 999, DR: 5, AR: 998. Instruction: < add -> -1 | sp >, ACC: 3
-DEBUG    root:control_unit.py:38  Tick: 515, IP: 241, SP: 999, DR: 5, AR: 998. Instruction: < add -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 516, IP: 242, SP: 999, DR: 5, AR: 998. Instruction: < st -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 517, IP: 242, SP: 999, DR: 5, AR: 999. Instruction: < st -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 518, IP: 242, SP: 999, DR: 5, AR: 999. Instruction: < st -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 519, IP: 243, SP: 999, DR: 5, AR: 999. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 520, IP: 243, SP: 1000, DR: 5, AR: 999. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 521, IP: 243, SP: 1000, DR: 8, AR: 999. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 522, IP: 243, SP: 1000, DR: 8, AR: 999. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 523, IP: 244, SP: 1000, DR: 8, AR: 999. Instruction: < st -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 524, IP: 244, SP: 1000, DR: 8, AR: 11. Instruction: < st -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 525, IP: 244, SP: 1000, DR: 8, AR: 11. Instruction: < st -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 526, IP: 245, SP: 1000, DR: 8, AR: 11. Instruction: < ld -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 527, IP: 245, SP: 1000, DR: 8, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 528, IP: 245, SP: 1000, DR: 5, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 529, IP: 245, SP: 1000, DR: 5, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 530, IP: 246, SP: 1000, DR: 5, AR: 13. Instruction: < st -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 531, IP: 246, SP: 1000, DR: 5, AR: 10. Instruction: < st -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 532, IP: 246, SP: 1000, DR: 5, AR: 10. Instruction: < st -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 533, IP: 247, SP: 1000, DR: 5, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 534, IP: 200, SP: 1000, DR: 5, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 535, IP: 201, SP: 1000, DR: 5, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 536, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 537, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 538, IP: 202, SP: 1000, DR: 4000000, AR: 10. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 539, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 540, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 541, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 542, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 543, IP: 203, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 544, IP: 203, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 545, IP: 204, SP: 999, DR: 8, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 546, IP: 204, SP: 999, DR: 8, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 547, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 548, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 549, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 550, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 551, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 552, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 553, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 554, IP: 206, SP: 1000, DR: -3999992, AR: 999. Instruction: < pop -> None | None >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 555, IP: 206, SP: 1000, DR: -3999992, AR: 999. Instruction: < pop -> None | None >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 556, IP: 207, SP: 1000, DR: -3999992, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 557, IP: 208, SP: 1000, DR: -3999992, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 558, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999992
-DEBUG    root:control_unit.py:38  Tick: 559, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 560, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 561, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 562, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 563, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 564, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 565, IP: 210, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 566, IP: 210, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 567, IP: 211, SP: 999, DR: 8, AR: 11. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 568, IP: 211, SP: 998, DR: 8, AR: 998. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 569, IP: 211, SP: 998, DR: 8, AR: 998. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 570, IP: 212, SP: 998, DR: 8, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 571, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 572, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 573, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 574, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 575, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 576, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 577, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 578, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 579, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 580, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 581, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 582, IP: 215, SP: 998, DR: 8, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 583, IP: 215, SP: 998, DR: 8, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 584, IP: 216, SP: 998, DR: 8, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 585, IP: 216, SP: 998, DR: 8, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 586, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 587, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 588, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 589, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 590, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 591, IP: 218, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 592, IP: 218, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 593, IP: 218, SP: 999, DR: 0, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 594, IP: 218, SP: 999, DR: 0, AR: 998. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 595, IP: 219, SP: 999, DR: 0, AR: 998. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 596, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 597, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 598, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 599, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 600, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 601, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 602, IP: 221, SP: 999, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 603, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 604, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 605, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 606, IP: 222, SP: 1000, DR: 0, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 607, IP: 223, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 608, IP: 223, SP: 1000, DR: 0, AR: 12. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 609, IP: 223, SP: 1000, DR: 2, AR: 12. Instruction: < ld -> 12 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 610, IP: 223, SP: 1000, DR: 2, AR: 12. Instruction: < ld -> 12 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 611, IP: 224, SP: 1000, DR: 2, AR: 12. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 612, IP: 224, SP: 999, DR: 2, AR: 999. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 613, IP: 224, SP: 999, DR: 2, AR: 999. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 614, IP: 225, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 615, IP: 225, SP: 999, DR: 2, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 616, IP: 225, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 617, IP: 225, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 618, IP: 226, SP: 999, DR: 8, AR: 11. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 619, IP: 226, SP: 998, DR: 8, AR: 998. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 620, IP: 226, SP: 998, DR: 8, AR: 998. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 621, IP: 227, SP: 998, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 622, IP: 227, SP: 999, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 623, IP: 227, SP: 999, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 624, IP: 227, SP: 999, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 625, IP: 228, SP: 999, DR: 8, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 626, IP: 228, SP: 999, DR: 8, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 627, IP: 228, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 628, IP: 228, SP: 999, DR: 2, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 629, IP: 229, SP: 999, DR: 2, AR: 999. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 630, IP: 229, SP: 999, DR: 2, AR: 998. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 631, IP: 229, SP: 999, DR: 8, AR: 998. Instruction: < add -> -1 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 632, IP: 229, SP: 999, DR: 8, AR: 998. Instruction: < add -> -1 | sp >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 633, IP: 230, SP: 999, DR: 8, AR: 998. Instruction: < st -> 0 | sp >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 634, IP: 230, SP: 999, DR: 8, AR: 999. Instruction: < st -> 0 | sp >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 635, IP: 230, SP: 999, DR: 8, AR: 999. Instruction: < st -> 0 | sp >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 636, IP: 231, SP: 999, DR: 8, AR: 999. Instruction: < pop -> None | None >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 637, IP: 231, SP: 1000, DR: 8, AR: 999. Instruction: < pop -> None | None >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 638, IP: 231, SP: 1000, DR: 10, AR: 999. Instruction: < pop -> None | None >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 639, IP: 231, SP: 1000, DR: 10, AR: 999. Instruction: < pop -> None | None >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 640, IP: 232, SP: 1000, DR: 10, AR: 999. Instruction: < st -> 12 | mem >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 641, IP: 232, SP: 1000, DR: 10, AR: 12. Instruction: < st -> 12 | mem >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 642, IP: 232, SP: 1000, DR: 10, AR: 12. Instruction: < st -> 12 | mem >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 643, IP: 233, SP: 1000, DR: 10, AR: 12. Instruction: < ld -> 11 | mem >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 644, IP: 233, SP: 1000, DR: 10, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 645, IP: 233, SP: 1000, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 10
-DEBUG    root:control_unit.py:38  Tick: 646, IP: 233, SP: 1000, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 647, IP: 234, SP: 1000, DR: 8, AR: 11. Instruction: < st -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 648, IP: 234, SP: 1000, DR: 8, AR: 13. Instruction: < st -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 649, IP: 234, SP: 1000, DR: 8, AR: 13. Instruction: < st -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 650, IP: 235, SP: 1000, DR: 8, AR: 13. Instruction: < ld -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 651, IP: 235, SP: 1000, DR: 8, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 652, IP: 235, SP: 1000, DR: 5, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 653, IP: 235, SP: 1000, DR: 5, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 654, IP: 236, SP: 1000, DR: 5, AR: 10. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 655, IP: 236, SP: 999, DR: 5, AR: 999. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 656, IP: 236, SP: 999, DR: 5, AR: 999. Instruction: < push -> None | None >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 657, IP: 237, SP: 999, DR: 5, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 658, IP: 237, SP: 999, DR: 5, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 659, IP: 237, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 660, IP: 237, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 661, IP: 238, SP: 999, DR: 8, AR: 11. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 662, IP: 238, SP: 998, DR: 8, AR: 998. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 663, IP: 238, SP: 998, DR: 8, AR: 998. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 664, IP: 239, SP: 998, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 665, IP: 239, SP: 999, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 666, IP: 239, SP: 999, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 667, IP: 239, SP: 999, DR: 8, AR: 998. Instruction: < pop -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 668, IP: 240, SP: 999, DR: 8, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 669, IP: 240, SP: 999, DR: 8, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 670, IP: 240, SP: 999, DR: 5, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 671, IP: 240, SP: 999, DR: 5, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 672, IP: 241, SP: 999, DR: 5, AR: 999. Instruction: < add -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 673, IP: 241, SP: 999, DR: 5, AR: 998. Instruction: < add -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 674, IP: 241, SP: 999, DR: 8, AR: 998. Instruction: < add -> -1 | sp >, ACC: 5
-DEBUG    root:control_unit.py:38  Tick: 675, IP: 241, SP: 999, DR: 8, AR: 998. Instruction: < add -> -1 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 676, IP: 242, SP: 999, DR: 8, AR: 998. Instruction: < st -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 677, IP: 242, SP: 999, DR: 8, AR: 999. Instruction: < st -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 678, IP: 242, SP: 999, DR: 8, AR: 999. Instruction: < st -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 679, IP: 243, SP: 999, DR: 8, AR: 999. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 680, IP: 243, SP: 1000, DR: 8, AR: 999. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 681, IP: 243, SP: 1000, DR: 13, AR: 999. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 682, IP: 243, SP: 1000, DR: 13, AR: 999. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 683, IP: 244, SP: 1000, DR: 13, AR: 999. Instruction: < st -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 684, IP: 244, SP: 1000, DR: 13, AR: 11. Instruction: < st -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 685, IP: 244, SP: 1000, DR: 13, AR: 11. Instruction: < st -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 686, IP: 245, SP: 1000, DR: 13, AR: 11. Instruction: < ld -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 687, IP: 245, SP: 1000, DR: 13, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 688, IP: 245, SP: 1000, DR: 8, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 689, IP: 245, SP: 1000, DR: 8, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 690, IP: 246, SP: 1000, DR: 8, AR: 13. Instruction: < st -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 691, IP: 246, SP: 1000, DR: 8, AR: 10. Instruction: < st -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 692, IP: 246, SP: 1000, DR: 8, AR: 10. Instruction: < st -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 693, IP: 247, SP: 1000, DR: 8, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 694, IP: 200, SP: 1000, DR: 8, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 695, IP: 201, SP: 1000, DR: 8, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 696, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 697, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 698, IP: 202, SP: 1000, DR: 4000000, AR: 10. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 699, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 700, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 701, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 702, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 703, IP: 203, SP: 999, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 704, IP: 203, SP: 999, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 705, IP: 204, SP: 999, DR: 13, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 706, IP: 204, SP: 999, DR: 13, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 707, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 708, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 709, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 710, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 711, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 712, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 713, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 714, IP: 206, SP: 1000, DR: -3999987, AR: 999. Instruction: < pop -> None | None >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 715, IP: 206, SP: 1000, DR: -3999987, AR: 999. Instruction: < pop -> None | None >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 716, IP: 207, SP: 1000, DR: -3999987, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 717, IP: 208, SP: 1000, DR: -3999987, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 718, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999987
-DEBUG    root:control_unit.py:38  Tick: 719, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 720, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 721, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 722, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 723, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 724, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 725, IP: 210, SP: 999, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 726, IP: 210, SP: 999, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 727, IP: 211, SP: 999, DR: 13, AR: 11. Instruction: < push -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 728, IP: 211, SP: 998, DR: 13, AR: 998. Instruction: < push -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 729, IP: 211, SP: 998, DR: 13, AR: 998. Instruction: < push -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 730, IP: 212, SP: 998, DR: 13, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 731, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 732, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 733, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 734, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 735, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 736, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 737, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 738, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 739, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 740, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 741, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 742, IP: 215, SP: 998, DR: 13, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 743, IP: 215, SP: 998, DR: 13, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 744, IP: 216, SP: 998, DR: 13, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 745, IP: 216, SP: 998, DR: 13, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 746, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 747, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 748, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 749, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 750, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 751, IP: 218, SP: 998, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 752, IP: 218, SP: 999, DR: 2, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 753, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 754, IP: 218, SP: 999, DR: 1, AR: 998. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 755, IP: 219, SP: 999, DR: 1, AR: 998. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 756, IP: 219, SP: 999, DR: 1, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 757, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 758, IP: 219, SP: 999, DR: 0, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 759, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 760, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 761, IP: 220, SP: 999, DR: 0, AR: 999. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 762, IP: 221, SP: 999, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 763, IP: 221, SP: 1000, DR: 0, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 764, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 765, IP: 221, SP: 1000, DR: 1, AR: 999. Instruction: < pop -> None | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 766, IP: 222, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 767, IP: 232, SP: 1000, DR: 1, AR: 999. Instruction: < jnz -> 232 | None >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 768, IP: 233, SP: 1000, DR: 1, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 769, IP: 233, SP: 1000, DR: 1, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 770, IP: 233, SP: 1000, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 771, IP: 233, SP: 1000, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 772, IP: 234, SP: 1000, DR: 13, AR: 11. Instruction: < st -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 773, IP: 234, SP: 1000, DR: 13, AR: 13. Instruction: < st -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 774, IP: 234, SP: 1000, DR: 13, AR: 13. Instruction: < st -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 775, IP: 235, SP: 1000, DR: 13, AR: 13. Instruction: < ld -> 10 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 776, IP: 235, SP: 1000, DR: 13, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 777, IP: 235, SP: 1000, DR: 8, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 778, IP: 235, SP: 1000, DR: 8, AR: 10. Instruction: < ld -> 10 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 779, IP: 236, SP: 1000, DR: 8, AR: 10. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 780, IP: 236, SP: 999, DR: 8, AR: 999. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 781, IP: 236, SP: 999, DR: 8, AR: 999. Instruction: < push -> None | None >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 782, IP: 237, SP: 999, DR: 8, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 783, IP: 237, SP: 999, DR: 8, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 784, IP: 237, SP: 999, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 785, IP: 237, SP: 999, DR: 13, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 786, IP: 238, SP: 999, DR: 13, AR: 11. Instruction: < push -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 787, IP: 238, SP: 998, DR: 13, AR: 998. Instruction: < push -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 788, IP: 238, SP: 998, DR: 13, AR: 998. Instruction: < push -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 789, IP: 239, SP: 998, DR: 13, AR: 998. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 790, IP: 239, SP: 999, DR: 13, AR: 998. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 791, IP: 239, SP: 999, DR: 13, AR: 998. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 792, IP: 239, SP: 999, DR: 13, AR: 998. Instruction: < pop -> None | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 793, IP: 240, SP: 999, DR: 13, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 794, IP: 240, SP: 999, DR: 13, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 795, IP: 240, SP: 999, DR: 8, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 796, IP: 240, SP: 999, DR: 8, AR: 999. Instruction: < ld -> 0 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 797, IP: 241, SP: 999, DR: 8, AR: 999. Instruction: < add -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 798, IP: 241, SP: 999, DR: 8, AR: 998. Instruction: < add -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 799, IP: 241, SP: 999, DR: 13, AR: 998. Instruction: < add -> -1 | sp >, ACC: 8
-DEBUG    root:control_unit.py:38  Tick: 800, IP: 241, SP: 999, DR: 13, AR: 998. Instruction: < add -> -1 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 801, IP: 242, SP: 999, DR: 13, AR: 998. Instruction: < st -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 802, IP: 242, SP: 999, DR: 13, AR: 999. Instruction: < st -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 803, IP: 242, SP: 999, DR: 13, AR: 999. Instruction: < st -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 804, IP: 243, SP: 999, DR: 13, AR: 999. Instruction: < pop -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 805, IP: 243, SP: 1000, DR: 13, AR: 999. Instruction: < pop -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 806, IP: 243, SP: 1000, DR: 21, AR: 999. Instruction: < pop -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 807, IP: 243, SP: 1000, DR: 21, AR: 999. Instruction: < pop -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 808, IP: 244, SP: 1000, DR: 21, AR: 999. Instruction: < st -> 11 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 809, IP: 244, SP: 1000, DR: 21, AR: 11. Instruction: < st -> 11 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 810, IP: 244, SP: 1000, DR: 21, AR: 11. Instruction: < st -> 11 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 811, IP: 245, SP: 1000, DR: 21, AR: 11. Instruction: < ld -> 13 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 812, IP: 245, SP: 1000, DR: 21, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 813, IP: 245, SP: 1000, DR: 13, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 814, IP: 245, SP: 1000, DR: 13, AR: 13. Instruction: < ld -> 13 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 815, IP: 246, SP: 1000, DR: 13, AR: 13. Instruction: < st -> 10 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 816, IP: 246, SP: 1000, DR: 13, AR: 10. Instruction: < st -> 10 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 817, IP: 246, SP: 1000, DR: 13, AR: 10. Instruction: < st -> 10 | mem >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 818, IP: 247, SP: 1000, DR: 13, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 819, IP: 200, SP: 1000, DR: 13, AR: 10. Instruction: < jmp -> 200 | None >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 820, IP: 201, SP: 1000, DR: 13, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 821, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 13
-DEBUG    root:control_unit.py:38  Tick: 822, IP: 201, SP: 1000, DR: 4000000, AR: 10. Instruction: < ld -> 4000000 | direct >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 823, IP: 202, SP: 1000, DR: 4000000, AR: 10. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 824, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 825, IP: 202, SP: 999, DR: 4000000, AR: 999. Instruction: < push -> None | None >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 826, IP: 203, SP: 999, DR: 4000000, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 827, IP: 203, SP: 999, DR: 4000000, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 828, IP: 203, SP: 999, DR: 21, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 4000000
-DEBUG    root:control_unit.py:38  Tick: 829, IP: 203, SP: 999, DR: 21, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 830, IP: 204, SP: 999, DR: 21, AR: 11. Instruction: < sub -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 831, IP: 204, SP: 999, DR: 21, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 832, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 833, IP: 204, SP: 999, DR: 4000000, AR: 999. Instruction: < sub -> 0 | sp >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 834, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 835, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 836, IP: 205, SP: 999, DR: 4000000, AR: 999. Instruction: < st -> 0 | sp >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 837, IP: 206, SP: 999, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 838, IP: 206, SP: 1000, DR: 4000000, AR: 999. Instruction: < pop -> None | None >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 839, IP: 206, SP: 1000, DR: -3999979, AR: 999. Instruction: < pop -> None | None >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 840, IP: 206, SP: 1000, DR: -3999979, AR: 999. Instruction: < pop -> None | None >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 841, IP: 207, SP: 1000, DR: -3999979, AR: 999. Instruction: < jaz -> 247 | None >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 842, IP: 208, SP: 1000, DR: -3999979, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 843, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: -3999979
-DEBUG    root:control_unit.py:38  Tick: 844, IP: 208, SP: 1000, DR: 0, AR: 999. Instruction: < ld -> 0 | direct >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 845, IP: 209, SP: 1000, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 846, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 847, IP: 209, SP: 999, DR: 0, AR: 999. Instruction: < push -> None | None >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 848, IP: 210, SP: 999, DR: 0, AR: 999. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 849, IP: 210, SP: 999, DR: 0, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 850, IP: 210, SP: 999, DR: 21, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 0
-DEBUG    root:control_unit.py:38  Tick: 851, IP: 210, SP: 999, DR: 21, AR: 11. Instruction: < ld -> 11 | mem >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 852, IP: 211, SP: 999, DR: 21, AR: 11. Instruction: < push -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 853, IP: 211, SP: 998, DR: 21, AR: 998. Instruction: < push -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 854, IP: 211, SP: 998, DR: 21, AR: 998. Instruction: < push -> None | None >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 855, IP: 212, SP: 998, DR: 21, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 856, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 857, IP: 212, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 2 | direct >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 858, IP: 213, SP: 998, DR: 2, AR: 998. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 859, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 860, IP: 213, SP: 997, DR: 2, AR: 997. Instruction: < push -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 861, IP: 214, SP: 997, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 862, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 863, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 864, IP: 214, SP: 998, DR: 2, AR: 997. Instruction: < pop -> None | None >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 865, IP: 215, SP: 998, DR: 2, AR: 997. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 866, IP: 215, SP: 998, DR: 2, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 867, IP: 215, SP: 998, DR: 21, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 2
-DEBUG    root:control_unit.py:38  Tick: 868, IP: 215, SP: 998, DR: 21, AR: 998. Instruction: < ld -> 0 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 869, IP: 216, SP: 998, DR: 21, AR: 998. Instruction: < mod -> -1 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 870, IP: 216, SP: 998, DR: 21, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 871, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 21
-DEBUG    root:control_unit.py:38  Tick: 872, IP: 216, SP: 998, DR: 2, AR: 997. Instruction: < mod -> -1 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 873, IP: 217, SP: 998, DR: 2, AR: 997. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 874, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
-DEBUG    root:control_unit.py:38  Tick: 875, IP: 217, SP: 998, DR: 2, AR: 998. Instruction: < st -> 0 | sp >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 0, IP: 201, SP: 1000, DR: 0, AR: 0.			 < ld -> direct | 4000000 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 1, IP: 201, SP: 1000, DR: 4000000, AR: 0.			 < ld -> direct | 4000000 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 2, IP: 201, SP: 1000, DR: 4000000, AR: 0.			 < ld -> direct | 4000000 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 3, IP: 202, SP: 1000, DR: 4000000, AR: 0.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 4, IP: 202, SP: 999, DR: 4000000, AR: 999.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 5, IP: 202, SP: 999, DR: 4000000, AR: 999.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 6, IP: 203, SP: 999, DR: 4000000, AR: 999.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 7, IP: 203, SP: 999, DR: 4000000, AR: 11.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 8, IP: 203, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 9, IP: 203, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 10, IP: 204, SP: 999, DR: 1, AR: 11.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 11, IP: 204, SP: 999, DR: 1, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 12, IP: 204, SP: 999, DR: 4000000, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 13, IP: 204, SP: 999, DR: 4000000, AR: 999.			 < sub -> sp | 0 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 14, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 15, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 16, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 17, IP: 206, SP: 999, DR: 4000000, AR: 999.			 < pop -> None | None >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 18, IP: 206, SP: 1000, DR: 4000000, AR: 999.			 < pop -> None | None >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 19, IP: 206, SP: 1000, DR: -3999999, AR: 999.			 < pop -> None | None >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 20, IP: 206, SP: 1000, DR: -3999999, AR: 999.			 < pop -> None | None >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 21, IP: 207, SP: 1000, DR: -3999999, AR: 999.			 < jaz -> None | 247 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 22, IP: 208, SP: 1000, DR: -3999999, AR: 999.			 < ld -> direct | 0 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 23, IP: 208, SP: 1000, DR: 0, AR: 999.			 < ld -> direct | 0 >, ACC: -3999999
+DEBUG    root:control_unit.py:38  Tick: 24, IP: 208, SP: 1000, DR: 0, AR: 999.			 < ld -> direct | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 25, IP: 209, SP: 1000, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 26, IP: 209, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 27, IP: 209, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 28, IP: 210, SP: 999, DR: 0, AR: 999.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 29, IP: 210, SP: 999, DR: 0, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 30, IP: 210, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 31, IP: 210, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 32, IP: 211, SP: 999, DR: 1, AR: 11.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 33, IP: 211, SP: 998, DR: 1, AR: 998.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 34, IP: 211, SP: 998, DR: 1, AR: 998.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 35, IP: 212, SP: 998, DR: 1, AR: 998.			 < ld -> direct | 2 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 36, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 37, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 38, IP: 213, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 39, IP: 213, SP: 997, DR: 2, AR: 997.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 40, IP: 213, SP: 997, DR: 2, AR: 997.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 41, IP: 214, SP: 997, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 42, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 43, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 44, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 45, IP: 215, SP: 998, DR: 2, AR: 997.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 46, IP: 215, SP: 998, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 47, IP: 215, SP: 998, DR: 1, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 48, IP: 215, SP: 998, DR: 1, AR: 998.			 < ld -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 49, IP: 216, SP: 998, DR: 1, AR: 998.			 < mod -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 50, IP: 216, SP: 998, DR: 1, AR: 997.			 < mod -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 51, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 52, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 53, IP: 217, SP: 998, DR: 2, AR: 997.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 54, IP: 217, SP: 998, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 55, IP: 217, SP: 998, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 56, IP: 218, SP: 998, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 57, IP: 218, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 58, IP: 218, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 59, IP: 218, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 60, IP: 219, SP: 999, DR: 1, AR: 998.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 61, IP: 219, SP: 999, DR: 1, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 62, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 63, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 64, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 65, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 66, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 67, IP: 221, SP: 999, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 68, IP: 221, SP: 1000, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 69, IP: 221, SP: 1000, DR: 1, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 70, IP: 221, SP: 1000, DR: 1, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 71, IP: 222, SP: 1000, DR: 1, AR: 999.			 < jnz -> None | 232 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 72, IP: 232, SP: 1000, DR: 1, AR: 999.			 < jnz -> None | 232 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 73, IP: 233, SP: 1000, DR: 1, AR: 999.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 74, IP: 233, SP: 1000, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 75, IP: 233, SP: 1000, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 76, IP: 233, SP: 1000, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 77, IP: 234, SP: 1000, DR: 1, AR: 11.			 < st -> mem | 13 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 78, IP: 234, SP: 1000, DR: 1, AR: 13.			 < st -> mem | 13 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 79, IP: 234, SP: 1000, DR: 1, AR: 13.			 < st -> mem | 13 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 80, IP: 235, SP: 1000, DR: 1, AR: 13.			 < ld -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 81, IP: 235, SP: 1000, DR: 1, AR: 10.			 < ld -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 82, IP: 235, SP: 1000, DR: 1, AR: 10.			 < ld -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 83, IP: 235, SP: 1000, DR: 1, AR: 10.			 < ld -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 84, IP: 236, SP: 1000, DR: 1, AR: 10.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 85, IP: 236, SP: 999, DR: 1, AR: 999.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 86, IP: 236, SP: 999, DR: 1, AR: 999.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 87, IP: 237, SP: 999, DR: 1, AR: 999.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 88, IP: 237, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 89, IP: 237, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 90, IP: 237, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 91, IP: 238, SP: 999, DR: 1, AR: 11.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 92, IP: 238, SP: 998, DR: 1, AR: 998.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 93, IP: 238, SP: 998, DR: 1, AR: 998.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 94, IP: 239, SP: 998, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 95, IP: 239, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 96, IP: 239, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 97, IP: 239, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 98, IP: 240, SP: 999, DR: 1, AR: 998.			 < ld -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 99, IP: 240, SP: 999, DR: 1, AR: 999.			 < ld -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 100, IP: 240, SP: 999, DR: 1, AR: 999.			 < ld -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 101, IP: 240, SP: 999, DR: 1, AR: 999.			 < ld -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 102, IP: 241, SP: 999, DR: 1, AR: 999.			 < add -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 103, IP: 241, SP: 999, DR: 1, AR: 998.			 < add -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 104, IP: 241, SP: 999, DR: 1, AR: 998.			 < add -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 105, IP: 241, SP: 999, DR: 1, AR: 998.			 < add -> sp | -1 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 106, IP: 242, SP: 999, DR: 1, AR: 998.			 < st -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 107, IP: 242, SP: 999, DR: 1, AR: 999.			 < st -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 108, IP: 242, SP: 999, DR: 1, AR: 999.			 < st -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 109, IP: 243, SP: 999, DR: 1, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 110, IP: 243, SP: 1000, DR: 1, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 111, IP: 243, SP: 1000, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 112, IP: 243, SP: 1000, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 113, IP: 244, SP: 1000, DR: 2, AR: 999.			 < st -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 114, IP: 244, SP: 1000, DR: 2, AR: 11.			 < st -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 115, IP: 244, SP: 1000, DR: 2, AR: 11.			 < st -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 116, IP: 245, SP: 1000, DR: 2, AR: 11.			 < ld -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 117, IP: 245, SP: 1000, DR: 2, AR: 13.			 < ld -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 118, IP: 245, SP: 1000, DR: 1, AR: 13.			 < ld -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 119, IP: 245, SP: 1000, DR: 1, AR: 13.			 < ld -> mem | 13 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 120, IP: 246, SP: 1000, DR: 1, AR: 13.			 < st -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 121, IP: 246, SP: 1000, DR: 1, AR: 10.			 < st -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 122, IP: 246, SP: 1000, DR: 1, AR: 10.			 < st -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 123, IP: 247, SP: 1000, DR: 1, AR: 10.			 < jmp -> None | 200 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 124, IP: 200, SP: 1000, DR: 1, AR: 10.			 < jmp -> None | 200 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 125, IP: 201, SP: 1000, DR: 1, AR: 10.			 < ld -> direct | 4000000 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 126, IP: 201, SP: 1000, DR: 4000000, AR: 10.			 < ld -> direct | 4000000 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 127, IP: 201, SP: 1000, DR: 4000000, AR: 10.			 < ld -> direct | 4000000 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 128, IP: 202, SP: 1000, DR: 4000000, AR: 10.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 129, IP: 202, SP: 999, DR: 4000000, AR: 999.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 130, IP: 202, SP: 999, DR: 4000000, AR: 999.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 131, IP: 203, SP: 999, DR: 4000000, AR: 999.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 132, IP: 203, SP: 999, DR: 4000000, AR: 11.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 133, IP: 203, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 134, IP: 203, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 135, IP: 204, SP: 999, DR: 2, AR: 11.			 < sub -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 136, IP: 204, SP: 999, DR: 2, AR: 999.			 < sub -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 137, IP: 204, SP: 999, DR: 4000000, AR: 999.			 < sub -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 138, IP: 204, SP: 999, DR: 4000000, AR: 999.			 < sub -> sp | 0 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 139, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 140, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 141, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 142, IP: 206, SP: 999, DR: 4000000, AR: 999.			 < pop -> None | None >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 143, IP: 206, SP: 1000, DR: 4000000, AR: 999.			 < pop -> None | None >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 144, IP: 206, SP: 1000, DR: -3999998, AR: 999.			 < pop -> None | None >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 145, IP: 206, SP: 1000, DR: -3999998, AR: 999.			 < pop -> None | None >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 146, IP: 207, SP: 1000, DR: -3999998, AR: 999.			 < jaz -> None | 247 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 147, IP: 208, SP: 1000, DR: -3999998, AR: 999.			 < ld -> direct | 0 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 148, IP: 208, SP: 1000, DR: 0, AR: 999.			 < ld -> direct | 0 >, ACC: -3999998
+DEBUG    root:control_unit.py:38  Tick: 149, IP: 208, SP: 1000, DR: 0, AR: 999.			 < ld -> direct | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 150, IP: 209, SP: 1000, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 151, IP: 209, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 152, IP: 209, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 153, IP: 210, SP: 999, DR: 0, AR: 999.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 154, IP: 210, SP: 999, DR: 0, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 155, IP: 210, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 156, IP: 210, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 157, IP: 211, SP: 999, DR: 2, AR: 11.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 158, IP: 211, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 159, IP: 211, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 160, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 161, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 162, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 163, IP: 213, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 164, IP: 213, SP: 997, DR: 2, AR: 997.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 165, IP: 213, SP: 997, DR: 2, AR: 997.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 166, IP: 214, SP: 997, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 167, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 168, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 169, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 170, IP: 215, SP: 998, DR: 2, AR: 997.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 171, IP: 215, SP: 998, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 172, IP: 215, SP: 998, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 173, IP: 215, SP: 998, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 174, IP: 216, SP: 998, DR: 2, AR: 998.			 < mod -> sp | -1 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 175, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 176, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 177, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 178, IP: 217, SP: 998, DR: 2, AR: 997.			 < st -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 179, IP: 217, SP: 998, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 180, IP: 217, SP: 998, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 181, IP: 218, SP: 998, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 182, IP: 218, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 183, IP: 218, SP: 999, DR: 0, AR: 998.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 184, IP: 218, SP: 999, DR: 0, AR: 998.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 185, IP: 219, SP: 999, DR: 0, AR: 998.			 < sub -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 186, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 187, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 188, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 189, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 190, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 191, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 192, IP: 221, SP: 999, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 193, IP: 221, SP: 1000, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 194, IP: 221, SP: 1000, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 195, IP: 221, SP: 1000, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 196, IP: 222, SP: 1000, DR: 0, AR: 999.			 < jnz -> None | 232 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 197, IP: 223, SP: 1000, DR: 0, AR: 999.			 < ld -> mem | 12 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 198, IP: 223, SP: 1000, DR: 0, AR: 12.			 < ld -> mem | 12 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 199, IP: 223, SP: 1000, DR: 0, AR: 12.			 < ld -> mem | 12 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 200, IP: 223, SP: 1000, DR: 0, AR: 12.			 < ld -> mem | 12 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 201, IP: 224, SP: 1000, DR: 0, AR: 12.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 202, IP: 224, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 203, IP: 224, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 204, IP: 225, SP: 999, DR: 0, AR: 999.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 205, IP: 225, SP: 999, DR: 0, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 206, IP: 225, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 207, IP: 225, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 208, IP: 226, SP: 999, DR: 2, AR: 11.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 209, IP: 226, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 210, IP: 226, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 211, IP: 227, SP: 998, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 212, IP: 227, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 213, IP: 227, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 214, IP: 227, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 215, IP: 228, SP: 999, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 216, IP: 228, SP: 999, DR: 2, AR: 999.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 217, IP: 228, SP: 999, DR: 0, AR: 999.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 218, IP: 228, SP: 999, DR: 0, AR: 999.			 < ld -> sp | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 219, IP: 229, SP: 999, DR: 0, AR: 999.			 < add -> sp | -1 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 220, IP: 229, SP: 999, DR: 0, AR: 998.			 < add -> sp | -1 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 221, IP: 229, SP: 999, DR: 2, AR: 998.			 < add -> sp | -1 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 222, IP: 229, SP: 999, DR: 2, AR: 998.			 < add -> sp | -1 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 223, IP: 230, SP: 999, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 224, IP: 230, SP: 999, DR: 2, AR: 999.			 < st -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 225, IP: 230, SP: 999, DR: 2, AR: 999.			 < st -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 226, IP: 231, SP: 999, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 227, IP: 231, SP: 1000, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 228, IP: 231, SP: 1000, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 229, IP: 231, SP: 1000, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 230, IP: 232, SP: 1000, DR: 2, AR: 999.			 < st -> mem | 12 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 231, IP: 232, SP: 1000, DR: 2, AR: 12.			 < st -> mem | 12 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 232, IP: 232, SP: 1000, DR: 2, AR: 12.			 < st -> mem | 12 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 233, IP: 233, SP: 1000, DR: 2, AR: 12.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 234, IP: 233, SP: 1000, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 235, IP: 233, SP: 1000, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 236, IP: 233, SP: 1000, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 237, IP: 234, SP: 1000, DR: 2, AR: 11.			 < st -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 238, IP: 234, SP: 1000, DR: 2, AR: 13.			 < st -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 239, IP: 234, SP: 1000, DR: 2, AR: 13.			 < st -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 240, IP: 235, SP: 1000, DR: 2, AR: 13.			 < ld -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 241, IP: 235, SP: 1000, DR: 2, AR: 10.			 < ld -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 242, IP: 235, SP: 1000, DR: 1, AR: 10.			 < ld -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 243, IP: 235, SP: 1000, DR: 1, AR: 10.			 < ld -> mem | 10 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 244, IP: 236, SP: 1000, DR: 1, AR: 10.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 245, IP: 236, SP: 999, DR: 1, AR: 999.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 246, IP: 236, SP: 999, DR: 1, AR: 999.			 < push -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 247, IP: 237, SP: 999, DR: 1, AR: 999.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 248, IP: 237, SP: 999, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 249, IP: 237, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 250, IP: 237, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 251, IP: 238, SP: 999, DR: 2, AR: 11.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 252, IP: 238, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 253, IP: 238, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 254, IP: 239, SP: 998, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 255, IP: 239, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 256, IP: 239, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 257, IP: 239, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 258, IP: 240, SP: 999, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 259, IP: 240, SP: 999, DR: 2, AR: 999.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 260, IP: 240, SP: 999, DR: 1, AR: 999.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 261, IP: 240, SP: 999, DR: 1, AR: 999.			 < ld -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 262, IP: 241, SP: 999, DR: 1, AR: 999.			 < add -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 263, IP: 241, SP: 999, DR: 1, AR: 998.			 < add -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 264, IP: 241, SP: 999, DR: 2, AR: 998.			 < add -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 265, IP: 241, SP: 999, DR: 2, AR: 998.			 < add -> sp | -1 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 266, IP: 242, SP: 999, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 267, IP: 242, SP: 999, DR: 2, AR: 999.			 < st -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 268, IP: 242, SP: 999, DR: 2, AR: 999.			 < st -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 269, IP: 243, SP: 999, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 270, IP: 243, SP: 1000, DR: 2, AR: 999.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 271, IP: 243, SP: 1000, DR: 3, AR: 999.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 272, IP: 243, SP: 1000, DR: 3, AR: 999.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 273, IP: 244, SP: 1000, DR: 3, AR: 999.			 < st -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 274, IP: 244, SP: 1000, DR: 3, AR: 11.			 < st -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 275, IP: 244, SP: 1000, DR: 3, AR: 11.			 < st -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 276, IP: 245, SP: 1000, DR: 3, AR: 11.			 < ld -> mem | 13 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 277, IP: 245, SP: 1000, DR: 3, AR: 13.			 < ld -> mem | 13 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 278, IP: 245, SP: 1000, DR: 2, AR: 13.			 < ld -> mem | 13 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 279, IP: 245, SP: 1000, DR: 2, AR: 13.			 < ld -> mem | 13 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 280, IP: 246, SP: 1000, DR: 2, AR: 13.			 < st -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 281, IP: 246, SP: 1000, DR: 2, AR: 10.			 < st -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 282, IP: 246, SP: 1000, DR: 2, AR: 10.			 < st -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 283, IP: 247, SP: 1000, DR: 2, AR: 10.			 < jmp -> None | 200 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 284, IP: 200, SP: 1000, DR: 2, AR: 10.			 < jmp -> None | 200 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 285, IP: 201, SP: 1000, DR: 2, AR: 10.			 < ld -> direct | 4000000 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 286, IP: 201, SP: 1000, DR: 4000000, AR: 10.			 < ld -> direct | 4000000 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 287, IP: 201, SP: 1000, DR: 4000000, AR: 10.			 < ld -> direct | 4000000 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 288, IP: 202, SP: 1000, DR: 4000000, AR: 10.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 289, IP: 202, SP: 999, DR: 4000000, AR: 999.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 290, IP: 202, SP: 999, DR: 4000000, AR: 999.			 < push -> None | None >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 291, IP: 203, SP: 999, DR: 4000000, AR: 999.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 292, IP: 203, SP: 999, DR: 4000000, AR: 11.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 293, IP: 203, SP: 999, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 4000000
+DEBUG    root:control_unit.py:38  Tick: 294, IP: 203, SP: 999, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 295, IP: 204, SP: 999, DR: 3, AR: 11.			 < sub -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 296, IP: 204, SP: 999, DR: 3, AR: 999.			 < sub -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 297, IP: 204, SP: 999, DR: 4000000, AR: 999.			 < sub -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 298, IP: 204, SP: 999, DR: 4000000, AR: 999.			 < sub -> sp | 0 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 299, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 300, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 301, IP: 205, SP: 999, DR: 4000000, AR: 999.			 < st -> sp | 0 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 302, IP: 206, SP: 999, DR: 4000000, AR: 999.			 < pop -> None | None >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 303, IP: 206, SP: 1000, DR: 4000000, AR: 999.			 < pop -> None | None >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 304, IP: 206, SP: 1000, DR: -3999997, AR: 999.			 < pop -> None | None >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 305, IP: 206, SP: 1000, DR: -3999997, AR: 999.			 < pop -> None | None >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 306, IP: 207, SP: 1000, DR: -3999997, AR: 999.			 < jaz -> None | 247 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 307, IP: 208, SP: 1000, DR: -3999997, AR: 999.			 < ld -> direct | 0 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 308, IP: 208, SP: 1000, DR: 0, AR: 999.			 < ld -> direct | 0 >, ACC: -3999997
+DEBUG    root:control_unit.py:38  Tick: 309, IP: 208, SP: 1000, DR: 0, AR: 999.			 < ld -> direct | 0 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 310, IP: 209, SP: 1000, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 311, IP: 209, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 312, IP: 209, SP: 999, DR: 0, AR: 999.			 < push -> None | None >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 313, IP: 210, SP: 999, DR: 0, AR: 999.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 314, IP: 210, SP: 999, DR: 0, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 315, IP: 210, SP: 999, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 0
+DEBUG    root:control_unit.py:38  Tick: 316, IP: 210, SP: 999, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 317, IP: 211, SP: 999, DR: 3, AR: 11.			 < push -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 318, IP: 211, SP: 998, DR: 3, AR: 998.			 < push -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 319, IP: 211, SP: 998, DR: 3, AR: 998.			 < push -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 320, IP: 212, SP: 998, DR: 3, AR: 998.			 < ld -> direct | 2 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 321, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 322, IP: 212, SP: 998, DR: 2, AR: 998.			 < ld -> direct | 2 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 323, IP: 213, SP: 998, DR: 2, AR: 998.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 324, IP: 213, SP: 997, DR: 2, AR: 997.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 325, IP: 213, SP: 997, DR: 2, AR: 997.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 326, IP: 214, SP: 997, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 327, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 328, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 329, IP: 214, SP: 998, DR: 2, AR: 997.			 < pop -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 330, IP: 215, SP: 998, DR: 2, AR: 997.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 331, IP: 215, SP: 998, DR: 2, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 332, IP: 215, SP: 998, DR: 3, AR: 998.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 333, IP: 215, SP: 998, DR: 3, AR: 998.			 < ld -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 334, IP: 216, SP: 998, DR: 3, AR: 998.			 < mod -> sp | -1 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 335, IP: 216, SP: 998, DR: 3, AR: 997.			 < mod -> sp | -1 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 336, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 337, IP: 216, SP: 998, DR: 2, AR: 997.			 < mod -> sp | -1 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 338, IP: 217, SP: 998, DR: 2, AR: 997.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 339, IP: 217, SP: 998, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 340, IP: 217, SP: 998, DR: 2, AR: 998.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 341, IP: 218, SP: 998, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 342, IP: 218, SP: 999, DR: 2, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 343, IP: 218, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 344, IP: 218, SP: 999, DR: 1, AR: 998.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 345, IP: 219, SP: 999, DR: 1, AR: 998.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 346, IP: 219, SP: 999, DR: 1, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 347, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 348, IP: 219, SP: 999, DR: 0, AR: 999.			 < sub -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 349, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 350, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 351, IP: 220, SP: 999, DR: 0, AR: 999.			 < st -> sp | 0 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 352, IP: 221, SP: 999, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 353, IP: 221, SP: 1000, DR: 0, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 354, IP: 221, SP: 1000, DR: 1, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 355, IP: 221, SP: 1000, DR: 1, AR: 999.			 < pop -> None | None >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 356, IP: 222, SP: 1000, DR: 1, AR: 999.			 < jnz -> None | 232 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 357, IP: 232, SP: 1000, DR: 1, AR: 999.			 < jnz -> None | 232 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 358, IP: 233, SP: 1000, DR: 1, AR: 999.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 359, IP: 233, SP: 1000, DR: 1, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 360, IP: 233, SP: 1000, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 1
+DEBUG    root:control_unit.py:38  Tick: 361, IP: 233, SP: 1000, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 362, IP: 234, SP: 1000, DR: 3, AR: 11.			 < st -> mem | 13 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 363, IP: 234, SP: 1000, DR: 3, AR: 13.			 < st -> mem | 13 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 364, IP: 234, SP: 1000, DR: 3, AR: 13.			 < st -> mem | 13 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 365, IP: 235, SP: 1000, DR: 3, AR: 13.			 < ld -> mem | 10 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 366, IP: 235, SP: 1000, DR: 3, AR: 10.			 < ld -> mem | 10 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 367, IP: 235, SP: 1000, DR: 2, AR: 10.			 < ld -> mem | 10 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 368, IP: 235, SP: 1000, DR: 2, AR: 10.			 < ld -> mem | 10 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 369, IP: 236, SP: 1000, DR: 2, AR: 10.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 370, IP: 236, SP: 999, DR: 2, AR: 999.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 371, IP: 236, SP: 999, DR: 2, AR: 999.			 < push -> None | None >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 372, IP: 237, SP: 999, DR: 2, AR: 999.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 373, IP: 237, SP: 999, DR: 2, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 374, IP: 237, SP: 999, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 375, IP: 237, SP: 999, DR: 3, AR: 11.			 < ld -> mem | 11 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 376, IP: 238, SP: 999, DR: 3, AR: 11.			 < push -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 377, IP: 238, SP: 998, DR: 3, AR: 998.			 < push -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 378, IP: 238, SP: 998, DR: 3, AR: 998.			 < push -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 379, IP: 239, SP: 998, DR: 3, AR: 998.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 380, IP: 239, SP: 999, DR: 3, AR: 998.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 381, IP: 239, SP: 999, DR: 3, AR: 998.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 382, IP: 239, SP: 999, DR: 3, AR: 998.			 < pop -> None | None >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 383, IP: 240, SP: 999, DR: 3, AR: 998.			 < ld -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 384, IP: 240, SP: 999, DR: 3, AR: 999.			 < ld -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 385, IP: 240, SP: 999, DR: 2, AR: 999.			 < ld -> sp | 0 >, ACC: 3
+DEBUG    root:control_unit.py:38  Tick: 386, IP: 240, SP: 999, DR: 2, AR: 999.			 < ld -> sp | 0 >, ACC: 2
+DEBUG    root:control_unit.py:38  Tick: 387, IP: 241, SP: 999, DR: 2, AR: 999.			 < add -> sp | -1 >, ACC: 2
 ```
 
 ### Аналитика

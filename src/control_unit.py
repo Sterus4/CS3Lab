@@ -36,7 +36,7 @@ class ControlUnit:
 
     def tick(self):
         logging.debug(
-            " Tick: {tick}, IP: {ip}, SP: {sp}, DR: {dr}, AR: {ar}. Instruction: < {instr} >, ACC: {acc}".format(
+            " Tick: {tick}, IP: {ip}, SP: {sp}, DR: {dr}, AR: {ar}.\t\t\t < {instr} >, ACC: {acc}".format(
                 tick=self.current_tick_counter,
                 ip=self.datapath.ip_register.get_value(),
                 sp=self.datapath.sp_register.get_value(),

@@ -363,7 +363,7 @@ class Translator:
                         self.current_free_data_address += 1
                     ast.append(
                         AstNode(
-                            "Variable definition",
+                            "variable definition",
                             [
                                 AstExpression(name="type", body=var_type),
                                 AstExpression(name="name", body=var_name),
@@ -479,7 +479,7 @@ class Translator:
                         self.current_free_data_address += var_capacity
                     ast.append(
                         AstNode(
-                            "Pointer Definition",
+                            "pointer Definition",
                             [
                                 AstExpression(name="type", body=var_type),
                                 AstExpression(name="name", body=var_name),
@@ -523,7 +523,7 @@ class Translator:
                     )
                     ast.append(
                         AstNode(
-                            "Variable update",
+                            "variable update",
                             [
                                 AstExpression(name="name", body=var_name),
                                 AstExpression("value", str(operand)),
@@ -710,7 +710,7 @@ class Translator:
     def create_operation_data(self, address: int, operand=None, addressing=None):
         self.result_data.append(Instruction(address, Opcode.WORD, operand, addressing))
 
-    def translate(self, src: str) -> tuple[list[Instruction], list[AstNode]]:
+    def translate(self, src: str) -> tuple[list[Instruction], AstNode]:
         self.key_words = ["while", "if", "read", "print"]
         self.variables: dict[str, tuple[DataType, int]] = dict()
         self.current_free_data_address = 10
@@ -758,7 +758,7 @@ class Translator:
         result_ast = self.create_code(code)
         self.create_operation(Opcode.HLT)
         self.result.extend(self.result_data)
-        return self.result, result_ast
+        return self.result, AstNode("Program", result_ast)
 
 
 def main(source: str, target: str):
@@ -766,11 +766,10 @@ def main(source: str, target: str):
         source = f.read()
     source = re.sub(r"#.*\n", "", source)
     translator = Translator()
-    code, string_ast = translator.translate(source)
+    code, ast = translator.translate(source)
     write_code(target, code)
     print("Файл транслирован, полученное AST:")
-    for i in string_ast:
-        print(i)
+    print(ast)
 
 
 if __name__ == "__main__":
